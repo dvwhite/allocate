@@ -104,6 +104,24 @@ appt5 = Appointment(idnum=5,
                     interpreter="")
 
 
+appt6 = Appointment(idnum=6,
+                    start="13:45",
+                    duration_in_mins=90,
+                    patient=patient1,
+                    location=loc2,
+                    priority=20,
+                    provider="Dr. Jane",
+                    interpreter="")
+
+appt7 = Appointment(idnum=7,
+                    start="14:05",
+                    duration_in_mins=30,
+                    patient=patient1,
+                    location=loc2,
+                    priority=20,
+                    provider="Dr. Jane",
+                    interpreter="")
+
 interpreters = [interpreter1, interpreter2, interpreter3]
 appts = [appt1, appt2, appt3]
 patients = [patient1, patient2]
