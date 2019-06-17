@@ -1,7 +1,10 @@
 from schedulers import JobSupervisor
+from location import Point
 from tests.objects import (
     test_schedule,
-    appt4
+    appt4,
+    appt6,
+    appt7
 )
 import unittest
 import sys
@@ -92,10 +95,29 @@ class TestClass(unittest.TestCase):
                                                         appts[0]))
 
         # can_insert_job
-        pass
+        self.job_supervisor.appts_to_assign.append(appt6)
+        self.assertTrue(self.job_supervisor.can_insert_job(interpreters[0],
+                                                           appt6))
+        self.job_supervisor.assign(interpreters[0], appt6)
+        self.assertFalse(self.job_supervisor.can_insert_job(interpreters[0],
+                                                            appt7))
 
         # assign
-        pass
+
+        # save existing assigned staff before reset
+        interpreter = appts[0].interpreter
+        # reset objects
+        appts[0].interpreter = ""
+        self.job_supervisor.jobs[interpreter].remove(appts[0])
+        self.job_supervisor.move_to(interpreter, Point(0, 0))
+        self.job_supervisor.appts_to_assign.append(appts[0])
+
+        # assign
+        self.job_supervisor.assign(interpreter, appts[0])
+        self.assertEqual(appts[0].interpreter, interpreter)
+        self.assertIn(appts[0], self.job_supervisor.jobs[interpreter])
+        self.assertEqual(Point(*appts[0].location.coordinates),
+                         self.job_supervisor.locs[interpreter])
 
         # group_assign
         pass
