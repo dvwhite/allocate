@@ -103,7 +103,6 @@ class TestClass(unittest.TestCase):
                                                             appt7))
 
         # assign
-
         # save existing assigned staff before reset
         interpreter = appts[0].interpreter
         # reset objects
@@ -112,7 +111,7 @@ class TestClass(unittest.TestCase):
         self.job_supervisor.move_to(interpreter, Point(0, 0))
         self.job_supervisor.appts_to_assign.append(appts[0])
 
-        # assign
+        # assign the interpreter to the appointment
         self.job_supervisor.assign(interpreter, appts[0])
         self.assertEqual(appts[0].interpreter, interpreter)
         self.assertIn(appts[0], self.job_supervisor.jobs[interpreter])
@@ -120,7 +119,24 @@ class TestClass(unittest.TestCase):
                          self.job_supervisor.locs[interpreter])
 
         # group_assign
-        pass
+        # reset appts[0]
+        self.job_supervisor.jobs[interpreter].remove(appts[0])
+        self.job_supervisor.move_to(interpreter, Point(0, 0))
+        self.job_supervisor.appts_to_assign.append(appts[0])
+        # reset appt6
+        self.job_supervisor.jobs[interpreter].remove(appt6)
+        self.job_supervisor.move_to(interpreter, Point(0, 0))
+        self.job_supervisor.appts_to_assign.append(appt6)
+
+        # create jobs and call the method under test
+        jobs = [appts[0], appt6]
+        self.job_supervisor.group_assign(interpreter, jobs)
+        # check for appts[0] assignment
+        self.assertEqual(appts[0].interpreter, interpreter)
+        self.assertIn(appts[0], self.job_supervisor.jobs[interpreter])
+        # check for appt6 assignment
+        self.assertEqual(appt6.interpreter, interpreter)
+        self.assertIn(appt6, self.job_supervisor.jobs[interpreter])
 
 
 if __name__ == '__main__':
