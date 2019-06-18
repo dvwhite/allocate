@@ -172,9 +172,9 @@ class JobSupervisor(Reinitializer):
         :param schedule: A Schedule object
         """
         Reinitializer.__init__(self, schedule)
-        self.populate_appts()
+        self._populate_appts()
 
-    def populate_appts(self):
+    def _populate_appts(self):
         """
         Add interpreter jobs for each job already in self.schedule.appts
         Should only be called by self.__init__
@@ -188,6 +188,14 @@ class JobSupervisor(Reinitializer):
                 appts_assigned = [appt for appt in self.schedule.appts
                                   if appt.interpreter == interpreter]
                 self.group_assign(interpreter, appts_assigned)
+
+    def reset(self):
+        """
+        Reinitialize the class
+        :return: None
+        """
+        super(JobSupervisor, self).reset()
+        self._populate_appts()
 
     def get_job_with_id(self, job_id):
         """
