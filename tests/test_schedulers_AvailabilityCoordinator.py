@@ -32,7 +32,17 @@ class TestClass(unittest.TestCase):
         self.assertEqual(td[0], appts[2])
 
         # rev_update_time_dict
-        pass
+        self.cls.time_dict = {}
+        time = Time("8:30", TIME_FORMAT)
+        self.cls.rev_update_time_dict(time, appts)
+
+        td = self.cls.time_dict["08:00"]
+        self.assertEqual(td[0], appts[0])
+
+        td = self.cls.time_dict["08:25"]
+        self.assertEqual(td[0], appts[1])
+
+        self.assertNotIn("08:45", self.cls.time_dict.keys())
 
         # update_valid_choices
         pass
