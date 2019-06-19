@@ -368,8 +368,8 @@ class AvailabilityCoordinator(JobSupervisor):
     def rev_update_time_dict(self, time, appts):
         """
         A dict of Appointments in descending order at or after a given time
-        :param time: A Time object at or after which appts start
-        :param appts: A collection of Appointment objects at or after time
+        :param time: A Time object at or before which appts start
+        :param appts: A collection of Appointment objects at or before time
         :return: None
         """
         self.time_dict = collections.defaultdict(list)
@@ -381,6 +381,8 @@ class AvailabilityCoordinator(JobSupervisor):
     def update_valid_choices(self, time, appts):
         """
         A dict of Appointment lists indexed to interpreters that can cover them
+        Warning: Do not use if appointments are assigned out of sequence, or
+        self.get_last_job(interpreter) will not work correctly
         :param time: A Time object to direct self.update_time_dict
         :param appts: A list of Appointment objects
         :return: None
