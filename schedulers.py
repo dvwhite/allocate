@@ -271,7 +271,10 @@ class JobSupervisor(Reinitializer):
         """
         if appt2 is None:
             appt2 = self.get_last_job(interpreter)
-        return appt1.is_compatible(appt2)
+        appt_is_compatible = appt1.is_compatible(appt2)
+        pat_is_compatible = (interpreter.has_common_language(appt1.patient) and
+                             interpreter.has_common_language(appt2.patient))
+        return appt_is_compatible and pat_is_compatible
 
     def can_insert_job(self, interpreter, appt):
         """
