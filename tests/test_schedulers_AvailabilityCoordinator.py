@@ -59,11 +59,12 @@ class TestClass(unittest.TestCase):
         self.assertIn(appts[2], self.cls.valid_choices[interpreters[0]])
 
         # next_valid_choice
+        self.cls.appts_to_assign.append(appts[0])
+        self.cls.jobs[interpreters[0]] = [self.cls.default_appt]
         last_job = self.cls.get_last_job(interpreters[0])
         time = last_job.finish
-        print(self.cls.next_valid_choice(interpreters[0], time))
-        print(self.cls.valid_choices[interpreters[0]])
-
+        next_appt = self.cls.next_valid_choice(interpreters[0], time)
+        self.assertEqual(next_appt, appts[0])
 
 
 if __name__ == '__main__':
