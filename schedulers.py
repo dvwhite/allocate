@@ -429,8 +429,10 @@ class AvailabilityCoordinator(JobSupervisor):
         choices = self.valid_choices[interpreter]
         arrival_times = [calc_arrival(appt, current_appt)
                          for appt in choices]
-        idx = arrival_times.index(min(arrival_times))
-        return choices[idx]
+        if len(choices) > 0:
+            idx = arrival_times.index(min(arrival_times))
+            return choices[idx]
+        return None
 
 
 class MonteCarlo(AvailabilityCoordinator):
