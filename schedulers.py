@@ -938,7 +938,7 @@ class BruteForce(AvailabilityCoordinator):
         return lst1
 
 
-class WeightedInterval(AvailabilityCoordinator):
+class BruteForceDP(AvailabilityCoordinator):
     """
     Uses dynamic programming to reduce computational complexity of brute force
     """
