@@ -84,6 +84,15 @@ class Interpreter(Person):
         self.shift_finish = Time(shift_finish, TIME_FORMAT)
         self.assignments = assignments
 
+    def is_compatible(self, other):
+        """
+        Test if self can be assigned to other. Currently, the criterion is
+        mutual intelligibility (has_common_language) but can be expanded
+        :param other: Another Person or subclass of Person
+        :return: A Boolean whether self can be assigned to other
+        """
+        return self.has_common_language(other)
+
     def __lt__(self, other):
         """
         Override default method when sorting lists of self by start time
