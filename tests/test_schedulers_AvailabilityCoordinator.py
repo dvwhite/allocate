@@ -51,12 +51,10 @@ class TestClass(unittest.TestCase):
         self.cls.assign(interpreters[0], appts[0])
         self.cls.update_valid_choices(appts[0].finish, appts)
         self.assertIn(appts[1], self.cls.valid_choices[interpreters[0]])
-        self.assertIn(appts[2], self.cls.valid_choices[interpreters[0]])
 
         # rev_update_valid_choices
         self.cls.rev_update_valid_choices(appts[2].finish, appts)
         self.assertIn(appts[1], self.cls.valid_choices[interpreters[0]])
-        self.assertIn(appts[2], self.cls.valid_choices[interpreters[0]])
 
         # next_valid_choice
         self.cls.appts_to_assign.append(appts[0])
