@@ -16,6 +16,7 @@ from utils import (
     sum_lists_product,
     calc_arrival
 )
+from person import Patient
 from constants import TIME_FORMAT
 
 
@@ -42,7 +43,8 @@ class ObjectInitializer(Grid):
         self.jobs = {}
         self.schedule_paths = []
         self.best_paths = {}
-        self.default_appt = Appointment(0, "00:00", 0, None,
+        self.default_appt = Appointment(0, "00:00", 0,
+                                        Patient(0, "None", [], "None"),
                                         Point(0, 0), 0, "", "").copy()
         self.interpreters = []
         self.init_all_objects()
@@ -83,6 +85,7 @@ class ObjectInitializer(Grid):
         for patient in self.patients:
             for language in patient.languages:
                 self.languages.add(language)
+        self.default_appt.patient.languages = self.languages
 
         # Associate appts by idnum for optimization functions/objects
         for appt in self.schedule.appts:
@@ -272,9 +275,9 @@ class JobSupervisor(Reinitializer):
         if appt2 is None:
             appt2 = self.get_last_job(interpreter)
         appt_is_compatible = appt1.is_compatible(appt2)
-        pat_is_compatible = (interpreter.has_common_language(appt1.patient) and
-                             interpreter.has_common_language(appt2.patient))
-        return appt_is_compatible and pat_is_compatible
+        patient_is_compatible = (interpreter.is_compatible(appt1.patient) and
+                                 interpreter.is_compatible(appt2.patient))
+        return appt_is_compatible and patient_is_compatible
 
     def can_insert_job(self, interpreter, appt):
         """
