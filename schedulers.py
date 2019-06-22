@@ -13,11 +13,13 @@ from schedule import (
 from utils import (
     timer,
     Time,
-    sum_lists_product,
-    calc_arrival
+    sum_lists_product
 )
 from person import Patient
-from constants import TIME_FORMAT
+from constants import (
+    TIME_FORMAT,
+    WALKING_RATE
+)
 
 
 class ObjectInitializer(Grid):
@@ -256,6 +258,23 @@ class JobSupervisor(Reinitializer):
         jobs.append(appt)
         jobs.sort()
 
+    @staticmethod
+    def calc_arrival(appt1, appt2):
+        """
+        Compute when staff would arrive at appt2 after finishing appt1
+        :param appt1: An Appointment object (time order IS important)
+        :param appt2: An Appointment object (time order IS important)
+        :return: A Time object representing when staff could begin appt2
+        """
+        appts = [appt1, appt2]
+        appts.sort()
+        dist = int(appts[0].location.distance_from(appts[1].location))
+        commute_time = round(dist / WALKING_RATE, 0)
+        time = appts[0].finish.copy()
+        time.add_time(hours=0, minutes=commute_time)
+        time = max(time, appts[1].start.copy())
+        return time
+
     def calc_impact(self):
         """
         Calculate the schedule's total impact score
@@ -263,6 +282,19 @@ class JobSupervisor(Reinitializer):
         """
         return sum([appt.priority for appt in self.schedule.appts\
                     if len(appt.interpreter) > 0])
+
+    @staticmethod
+    def is_compatible_with_shift(interpreter, appt):
+        """
+        Check if appt intervals are compatible with the shift start and end times
+        :param interpreter: An Interpreter object
+        :param appt: An Appointment object
+        :return: A Boolean indicating True if appt is compatible
+        """
+        if appt.start >= interpreter.shift_start and \
+                appt.finish <= interpreter.shift_finish:
+            return True
+        return False
 
     def can_assign(self, interpreter, appt1, appt2=None):
         """
@@ -277,7 +309,11 @@ class JobSupervisor(Reinitializer):
         appt_is_compatible = appt1.is_compatible(appt2)
         patient_is_compatible = (interpreter.is_compatible(appt1.patient) and
                                  interpreter.is_compatible(appt2.patient))
-        return appt_is_compatible and patient_is_compatible
+        shift_is_compatible = (self.is_compatible_with_shift(appt1) and
+                               self.is_compatible_with_shift(appt2))
+        return (appt_is_compatible and
+                patient_is_compatible and
+                shift_is_compatible)
 
     def can_insert_job(self, interpreter, appt):
         """
@@ -433,7 +469,7 @@ class AvailabilityCoordinator(JobSupervisor):
         mode_dict[mode](time, self.appts_to_assign)
         current_appt = self.get_last_job(interpreter)
         choices = self.valid_choices[interpreter]
-        arrival_times = [calc_arrival(appt, current_appt)
+        arrival_times = [self.calc_arrival(appt, current_appt)
                          for appt in choices]
         if len(choices) > 0:
             idx = arrival_times.index(min(arrival_times))
