@@ -82,6 +82,36 @@ class Appointment(object):
         arrival_time = calc_arrival(first_appt, second_appt)
         return arrival_time <= second_appt.start
 
+    def calc_prior(self, others):
+        """
+        Returns the idnum of the rightmost compatible interval
+        :param others: a list of Interval objects
+        :return: An Interval object
+        """
+        start = [interval.start for interval in others]
+        finish = [interval.finish for interval in others]
+        rightmost = bisect.bisect_right(finish, start[self.idnum])
+        others_rightmost = copy.deepcopy(others[:rightmost])
+        compatible_idx = [other.num for other in others_rightmost]
+        compatible_idx.sort(reverse=True)
+        for idx in compatible_idx:
+            other = others[idx]
+            if other.is_compatible(self):
+                return other
+
+    def get_prior_num(self, others):
+        """
+        Handle output of calc_prior, coercing None to 0
+        :param others: a list of Interval objects
+        :return: An integer idnum
+        """
+        prior = self.calc_prior(others)
+        if prior is None:
+            prior_num = 0
+        else:
+            prior_num = prior.num
+        return prior_num
+
     def __str__(self):
         temp_str = ""
         delimiter = "|"
