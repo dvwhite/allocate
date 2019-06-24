@@ -15,7 +15,7 @@ def timer(method):
         timer_start = timeit.default_timer()
         result = method(*args, **kw)
         timer_finish = timeit.default_timer()
-        print('%r  %2.2f s' % \
+        print('%r  %2.2f s' %
               (method.__name__, round((timer_finish - timer_start), 2)))
         return result
     return wrapped
