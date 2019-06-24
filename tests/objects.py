@@ -122,8 +122,170 @@ appt7 = Appointment(idnum=7,
                     provider="Dr. Jane",
                     interpreter="")
 
+appt8=Appointment(idnum=8,start='08:00',duration_in_mins=75,
+                  patient=patient1,location=loc2,priority=85,
+                  provider="Dr. Jane",interpreter='')
+appt9=Appointment(idnum=9,start="08:00",duration_in_mins=55,
+                  patient=patient1,location=loc2,priority=215,
+                  provider="Dr. Jane",interpreter='')
+appt10=Appointment(idnum=10,start="08:00",duration_in_mins=435,
+                   patient=patient1,location=loc2,priority=85,
+                   provider="Dr. Jane",interpreter='')
+appt11=Appointment(idnum=11,start="08:15",duration_in_mins=60,
+                   patient=patient1,location=loc2,priority=213,
+                   provider="Dr. Jane",interpreter='')
+appt12=Appointment(idnum=12,start="08:30",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt13=Appointment(idnum=13,start="08:30",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt14=Appointment(idnum=14,start="09:00",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt15=Appointment(idnum=15,start="09:00",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt16=Appointment(idnum=16,start="09:00",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+appt17=Appointment(idnum=17,start="09:15",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=105,
+                   provider="Dr. Jane",interpreter='')
+appt18=Appointment(idnum=18,start="09:20",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt19=Appointment(idnum=19,start="09:50",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt20=Appointment(idnum=20,start="10:00",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=95,
+                   provider="Dr. Jane",interpreter='')
+appt21=Appointment(idnum=21,start="10:00",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt22=Appointment(idnum=22,start="10:00",duration_in_mins=105,
+                   patient=patient1,location=loc2,priority=125,
+                   provider="Dr. Jane",interpreter='')
+appt23=Appointment(idnum=23,start="10:10",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt24=Appointment(idnum=24,start="10:15",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=205,
+                   provider="Dr. Jane",interpreter='')
+appt25=Appointment(idnum=25,start="10:15",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=85,
+                   provider="Dr. Jane",interpreter='')
+appt26=Appointment(idnum=26,start="10:30",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt27=Appointment(idnum=27,start="10:40",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt28=Appointment(idnum=28,start="11:00",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt29=Appointment(idnum=29,start="11:00",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=205,
+                   provider="Dr. Jane",interpreter='')
+appt30=Appointment(idnum=30,start="11:00",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=205,
+                   provider="Dr. Jane",interpreter='')
+appt31=Appointment(idnum=31,start="11:00",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+appt32=Appointment(idnum=32,start="11:20",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt33=Appointment(idnum=33,start="12:15",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt34=Appointment(idnum=34,start="12:30",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt35=Appointment(idnum=35,start="12:45",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=95,
+                   provider="Dr. Jane",interpreter='')
+appt36=Appointment(idnum=36,start="12:55",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+appt37=Appointment(idnum=37,start="13:00",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=205,
+                   provider="Dr. Jane",interpreter='')
+appt38=Appointment(idnum=38,start="13:00",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=195,
+                   provider="Dr. Jane",interpreter='')
+appt39=Appointment(idnum=39,start="13:00",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt40=Appointment(idnum=40,start="13:05",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt41=Appointment(idnum=41,start="13:30",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+appt42=Appointment(idnum=42,start="13:30",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=195,
+                   provider="Dr. Jane",interpreter='')
+appt43=Appointment(idnum=43,start="13:40",duration_in_mins=35,
+                   patient=patient1,location=loc2,priority=115,
+                   provider="Dr. Jane",interpreter='')
+appt44=Appointment(idnum=44,start="13:40",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt45=Appointment(idnum=45,start="13:45",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=105,
+                   provider="Dr. Jane",interpreter='')
+appt46=Appointment(idnum=46,start="13:55",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt47=Appointment(idnum=47,start="14:00",duration_in_mins=135,
+                   patient=patient1,location=loc2,priority=85,
+                   provider="Dr. Jane",interpreter='')
+appt48=Appointment(idnum=48,start="14:00",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=85,
+                   provider="Dr. Jane",interpreter='')
+appt49=Appointment(idnum=49,start="14:00",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=85,
+                   provider="Dr. Jane",interpreter='')
+appt50=Appointment(idnum=50,start="14:00",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt51=Appointment(idnum=51,start="14:00",duration_in_mins=75,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+appt52=Appointment(idnum=52,start="14:30",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=75,
+                   provider="Dr. Jane",interpreter='')
+appt53=Appointment(idnum=53,start="14:40",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=195,
+                   provider="Dr. Jane",interpreter='')
+appt54=Appointment(idnum=54,start="15:00",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=195,
+                   provider="Dr. Jane",interpreter='')
+appt55=Appointment(idnum=55,start="15:00",duration_in_mins=55,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt56=Appointment(idnum=56,start="15:30",duration_in_mins=30,
+                   patient=patient1,location=loc2,priority=215,
+                   provider="Dr. Jane",interpreter='')
+appt57=Appointment(idnum=57,start="16:00",duration_in_mins=45,
+                   patient=patient1,location=loc2,priority=212,
+                   provider="Dr. Jane",interpreter='')
+
+bf_appts = [appt7, appt8, appt9, appt10, appt11, appt12, 
+            appt13, appt14, appt15, appt16, appt17, appt18, 
+            appt19, appt20, appt21, appt22, appt23, appt24,
+            appt25, appt26, appt27, appt28, appt29, appt30,
+            appt31, appt32, appt33, appt34, appt35, appt36,
+            appt37, appt38, appt39, appt40, appt41, appt42,
+            appt43, appt44, appt45, appt46, appt47, appt48,
+            appt49, appt50, appt51, appt52, appt53, appt54]
+
 interpreters = [interpreter1, interpreter2, interpreter3]
 appts = [appt1, appt2, appt3]
 patients = [patient1, patient2]
 test_schedule = Schedule(appts=appts,
                          interpreters=interpreters)
+bf_test_schedule = Schedule(appts=bf_appts,
+                            interpreters=interpreters)
