@@ -1,6 +1,7 @@
 import timeit
 import datetime
 import copy
+from constants import WALKING_RATE
 from functools import wraps
 
 
@@ -59,6 +60,23 @@ def sum_lists_product(list1, list2):
     """
     lst_sum = sum([x * y for x, y in zip(list1, list2)])
     return lst_sum
+
+
+def calc_arrival(appt1, appt2):
+    """
+    Compute when staff would arrive at appt2 after finishing appt1
+    :param appt1: An Appointment object (time order IS important)
+    :param appt2: An Appointment object (time order IS important)
+    :return: A Time object representing when staff could begin appt2
+    """
+    appts = [appt1, appt2]
+    appts.sort()
+    dist = int(appts[0].location.distance_from(appts[1].location))
+    commute_time = round(dist / WALKING_RATE, 0)
+    time = appts[0].finish.copy()
+    time.add_time(hours=0, minutes=commute_time)
+    time = max(time, appts[1].start.copy())
+    return time
 
 
 class Time(object):
