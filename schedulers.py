@@ -664,7 +664,7 @@ class Greedy(AvailabilityCoordinator):
                                                             interpreter)
                 if isinstance(greedy_appt, Appointment):
                     is_valid_choice = self.can_insert_job(interpreter,
-                                                        greedy_appt)                
+                                                          greedy_appt)
   
                 if is_valid_choice:
                     self.assign(interpreter, greedy_appt)
@@ -980,10 +980,61 @@ class BruteForceDP(AvailabilityCoordinator):
     """
     def __init__(self, schedule:Schedule):
         """
-        Initialize the WeightedInterval class
+        Initialize the BruteForceDP class
         :param schedule: A schedule object
         """
         AvailabilityCoordinator.__init__(self, schedule)
+        self.appt_weights = self.calculate_weights(self.appts_to_assign)
+
+    @staticmethod
+    def calculate_weights(appts):
+        """
+        Create a dictionary of appt weights used in compute_optimal
+        Warning: Do not sort appts after running this function or
+        you might lose track of the correct indices for each appt
+        :param appts: a list of Interval objects
+        :return: a dictionary of appt idnum: appt weight
+        """
+        weights = dict()
+        weights[0] = 0
+        for appt in appts[1:]:
+            j = appts.index(appt)
+            p = appt.get_prior_num(appts)
+            weights[j] = max(appt.weight + weights[p],
+                             weights[j-1])
+        return weights
+
+    def compute_optimal(self, j):
+        """
+        Recursively visits nodes in a list and selects the most highly
+        weighted node at each edge, then proceeds from the optimal
+        node to the next optimal node, repeating until j=0
+        :param j: the idnum of the interval
+        :return: A string
+        """
+        if j == 0:
+            return 0
+        else:
+            appt = self.get_job_with_id(j)
+            v = appt.priority
+            p = appt.get_prior_num(self.appts_to_assign)
+            if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
+                return str(j) + ", " + str(self.compute_optimal(p))
+            else:
+                return self.compute_optimal(j-1)
+
+    def schedule_str(self):
+        """
+        Returns the optimal appointment selections in a delimited string. I
+        would suggest splitting it if you will do more than view it
+        :return: A string
+        """
+        optimal_solution = self.compute_optimal(len(self.appts_to_assign) - 1)
+        appt_lst = [int(idx) for idx in optimal_solution.split(sep=", ")]
+        appt_lst.sort()
+        print("")
+        for idx in appt_lst[1:]:
+            print(idx, self.appts_to_assign[idx])
 
 
 class Optimum(BruteForce, Greedy, MonteCarlo):
