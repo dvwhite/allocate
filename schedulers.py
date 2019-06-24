@@ -13,7 +13,8 @@ from schedule import (
 from utils import (
     timer,
     Time,
-    sum_lists_product
+    sum_lists_product,
+    calc_arrival
 )
 from person import Patient
 from constants import (
