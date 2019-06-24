@@ -89,14 +89,13 @@ class Appointment(object):
         :param others: a list of Interval objects
         :return: An Interval object
         """
+        self_idx = others.index(self)
         start = [interval.start for interval in others]
         finish = [interval.finish for interval in others]
-        rightmost = bisect.bisect_right(finish, start[self.idnum])
+        rightmost = bisect.bisect_right(finish, start[self_idx])
         others_rightmost = copy.deepcopy(others[:rightmost])
-        compatible_idx = [other.num for other in others_rightmost]
-        compatible_idx.sort(reverse=True)
-        for idx in compatible_idx:
-            other = others[idx]
+        others_rightmost.sort(reverse=True)
+        for other in others_rightmost:
             if other.is_compatible(self):
                 return other
 
@@ -110,7 +109,7 @@ class Appointment(object):
         if prior is None:
             prior_num = 0
         else:
-            prior_num = prior.num
+            prior_num = others.index(prior)
         return prior_num
 
     def __str__(self):
