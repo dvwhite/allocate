@@ -2,8 +2,10 @@ from operator import attrgetter
 from utils import (
     typedef,
     Time,
+    calc_arrival
 )
 from constants import TIME_FORMAT
+import bisect
 import copy
 
 
