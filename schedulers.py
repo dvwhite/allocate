@@ -1018,10 +1018,11 @@ class BruteForceDP(AvailabilityController):
         :param j: the idnum of the interval
         :return: A string
         """
+        print("j:", j)
         if j == 0:
             return 0
         else:
-            appt = self.get_job_with_id(j)
+            appt = self.appts_to_assign[j]
             v = appt.priority
             p = appt.get_prior_num(self.appts_to_assign)
             if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
