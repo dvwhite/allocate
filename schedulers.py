@@ -13,8 +13,7 @@ from schedule import (
 from utils import (
     timer,
     Time,
-    sum_lists_product,
-    calc_arrival
+    sum_lists_product
 )
 from person import Patient
 from constants import (
@@ -281,13 +280,13 @@ class JobSupervisor(Reinitializer):
         Calculate the schedule's total impact score
         :return: A number representing the total impact score for self.schedule
         """
-        return sum([appt.priority for appt in self.schedule.appts\
+        return sum([appt.priority for appt in self.schedule.appts
                     if len(appt.interpreter) > 0])
 
     @staticmethod
     def is_compatible_with_shift(interpreter, appt):
         """
-        Check if appt intervals are compatible with the shift start and end times
+        Check if appt intervals are compatible with shift start and end times
         :param interpreter: An Interpreter object
         :param appt: An Appointment object
         :return: A Boolean indicating True if appt is compatible
@@ -386,13 +385,13 @@ class JobSupervisor(Reinitializer):
             self.assign(interpreter, job)
 
 
-class AvailabilityCoordinator(JobSupervisor):
+class AvailabilityController(JobSupervisor):
     """
-    Coordinates the availability of Interpreter objects using Time dicts
+    Controls the availability of Interpreter objects using Time dicts
     """
     def __init__(self, schedule):
         """
-        Initialize the AvailabilityCoordinator class
+        Initialize the AvailabilityController class
         :param schedule: A Schedule object
         """
         JobSupervisor.__init__(self, schedule)
@@ -480,16 +479,16 @@ class AvailabilityCoordinator(JobSupervisor):
         return None
 
 
-class MonteCarlo(AvailabilityCoordinator):
+class MonteCarlo(AvailabilityController):
     """
-    Generate pseudo random schedules with variable impact scores
+    Generate pseudo-random schedules with variable impact scores
     """
     def __init__(self, schedule):
         """
         Initialize the MonteCarlo class
         :param schedule: A Schedule object
         """
-        AvailabilityCoordinator.__init__(self, schedule)
+        AvailabilityController.__init__(self, schedule)
 
     def optimized_random_schedule(self, time, printing=False):
         """
@@ -570,7 +569,7 @@ class MonteCarlo(AvailabilityCoordinator):
         return copy.deepcopy(best_schedule)
 
 
-class Greedy(AvailabilityCoordinator):
+class Greedy(AvailabilityController):
     """
     Utilizes the greedy heuristic for scheduling optimization
     """
@@ -579,7 +578,7 @@ class Greedy(AvailabilityCoordinator):
         Initialize the Greedy class
         :param schedule: A Schedule object
         """
-        AvailabilityCoordinator.__init__(self, schedule)
+        AvailabilityController.__init__(self, schedule)
         
     def select_highest_priority(self, interpreter, time, appts):
         """
@@ -603,7 +602,8 @@ class Greedy(AvailabilityCoordinator):
                 highest_priority_appt = appt
         return highest_priority_appt       
 
-    def process_args(self, optimal, appt_lst, interpreter):
+    @staticmethod
+    def process_args(optimal, appt_lst, interpreter):
         """
         Process args used to direct the Greedy methods of this class, which
         allows customization of the greedy strategy
@@ -639,7 +639,7 @@ class Greedy(AvailabilityCoordinator):
                           str(greedy_appt.finish))
         else:
             raise ValueError('optimal is not a valid value.')
-        return (greedy_appt, greedy_str)
+        return greedy_appt, greedy_str
 
     @timer
     def classic_greedy_schedule(self, time, optimal, printing=False):
@@ -651,7 +651,6 @@ class Greedy(AvailabilityCoordinator):
         :return: A Schedule object
         """
         self.reset()
-        greedy_appt = None
         is_valid_choice = False
         for interpreter in self.interpreters:
             appt_lst = []
@@ -671,7 +670,8 @@ class Greedy(AvailabilityCoordinator):
   
                 if is_valid_choice:
                     self.assign(interpreter, greedy_appt)
-                    if printing: print(greedy_str)
+                    if printing:
+                        print(greedy_str)
                 if greedy_appt in appt_lst:
                     appt_lst.remove(greedy_appt)
         return copy.deepcopy(self.schedule)
@@ -709,12 +709,13 @@ class Greedy(AvailabilityCoordinator):
                     greedy_appt, greedy_str = greedy_data
                     if isinstance(greedy_appt, Appointment):
                         is_valid_appt = self.can_insert_job(interpreter,
-                                                                greedy_appt)
+                                                            greedy_appt)
                     else:
                         is_valid_appt = False
                     if is_valid_appt:
                         self.assign(interpreter, greedy_appt)
-                        if printing: print(greedy_str)
+                        if printing:
+                            print(greedy_str)
                         # Remove the assigned appointment from the other
                         # interpreters' appointment lists
                         appt_keys = set(appts.keys()) - {[interpreter]}
@@ -738,7 +739,8 @@ class Greedy(AvailabilityCoordinator):
         """
         self.reset()
         current_interpreters = self.interpreters
-        if printing: print(self.schedule.brief())
+        if printing:
+            print(self.schedule.brief())
         for interpreter_sublist in interpreter_lists:
             if printing:
                 print("Greedy for " +
@@ -760,7 +762,7 @@ class Greedy(AvailabilityCoordinator):
         return sched_copy
 
 
-class BruteForce(AvailabilityCoordinator):
+class BruteForce(AvailabilityController):
     """
     Utilizes a brute force approach to computing as many of the
     total appointments in the power set as can reasonably be
@@ -772,7 +774,7 @@ class BruteForce(AvailabilityCoordinator):
         Initialize the BruteForce class
         :param schedule:
         """
-        AvailabilityCoordinator.__init__(self, schedule)
+        AvailabilityController.__init__(self, schedule)
 
     def dfs_weighted(self, tree, start, finish, interpreter, lst):
         """
@@ -794,7 +796,7 @@ class BruteForce(AvailabilityCoordinator):
             for next in tree[vertex] - set(path):
                 lst.append(path + [next])
                 if next == finish:
-                    weight = sum([appts_dict[ID].priority for ID in \
+                    weight = sum([appts_dict[ID].priority for ID in
                                   (path + [next]) if ID in appts_dict])
                     if weight > max_weight:
                         self.best_paths[interpreter] = (weight, path + [next])
@@ -824,7 +826,7 @@ class BruteForce(AvailabilityCoordinator):
                 if start < next:
                     break
                 elif next == finish:
-                    appt_wts = [appts_dict[ID].priority for ID in \
+                    appt_wts = [appts_dict[ID].priority for ID in
                                 (path + [next]) if ID in appts_dict]
                     inter_wts = [interpreter.jobs[
                         appts_dict[ID].location.building
@@ -851,7 +853,7 @@ class BruteForce(AvailabilityCoordinator):
         opt.reset()
         opt_appts = opt.schedule.appts
         opt.update_valid_choices(interpreter.shift_start, opt_appts)
-        temp_lst = [appt.idnum for appt in \
+        temp_lst = [appt.idnum for appt in
                     opt.valid_choices[interpreter]]
         temp_lst.sort()
         self.schedule_dict[0] = set(temp_lst)
@@ -860,7 +862,7 @@ class BruteForce(AvailabilityCoordinator):
             opt.assign(interpreter, appt)
             appt.interpreter = ""
             opt.update_valid_choices(appt.finish, opt_appts)
-            temp_lst = [appt.idnum for appt in \
+            temp_lst = [appt.idnum for appt in
                         opt.valid_choices[interpreter]]
             temp_lst.sort()
             self.schedule_dict[appt.idnum] = set(temp_lst)
@@ -912,14 +914,15 @@ class BruteForce(AvailabilityCoordinator):
         :param printing: A Boolean whether to print status messages
         :return: A Schedule object
         """
-        if printing: print(self.schedule.brief())
+        if printing:
+            print(self.schedule.brief())
         for interpreter in interpreters:
             if printing:
                 print("Finding optimal paths for " + str(interpreter) + "...")
             self.gen_all_paths(tree_function, interpreter)
             if interpreter in self.best_paths:
                 appt_ids = [self.appts_dict[ID] for ID in
-                            (self.best_paths[ interpreter][1])
+                            (self.best_paths[interpreter][1])
                             if ID in self.appts_dict]
                 jobs = self.get_jobs_with_ids(appt_ids)
                 self.group_assign(interpreter, jobs)
@@ -977,16 +980,16 @@ class BruteForce(AvailabilityCoordinator):
         return lst1
 
 
-class BruteForceDP(AvailabilityCoordinator):
+class BruteForceDP(AvailabilityController):
     """
-    Uses dynamic programming to reduce computational complexity of brute force
+    Uses memoization to reduce the computational complexity of brute force
     """
-    def __init__(self, schedule:Schedule):
+    def __init__(self, schedule):
         """
         Initialize the BruteForceDP class
         :param schedule: A schedule object
         """
-        AvailabilityCoordinator.__init__(self, schedule)
+        AvailabilityController.__init__(self, schedule)
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
 
     @staticmethod
@@ -1026,11 +1029,9 @@ class BruteForceDP(AvailabilityCoordinator):
             else:
                 return self.compute_optimal(j-1)
 
-    def schedule_str(self):
+    def print_schedule(self):
         """
-        Returns the optimal appointment selections in a delimited string. I
-        would suggest splitting it if you will do more than view it
-        :return: A string
+        Prints the optimal appointment selections
         """
         optimal_solution = self.compute_optimal(len(self.appts_to_assign) - 1)
         appt_lst = [int(idx) for idx in optimal_solution.split(sep=", ")]
