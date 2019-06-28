@@ -1,4 +1,4 @@
-from schedulers import AvailabilityCoordinator
+from schedulers import AvailabilityController
 from tests.objects import test_schedule
 from utils import Time
 from constants import TIME_FORMAT
@@ -13,7 +13,7 @@ class TestClass(unittest.TestCase):
     """
     def setUp(self):
         self.schedule = test_schedule.copy()
-        self.cls = AvailabilityCoordinator(self.schedule)
+        self.cls = AvailabilityController(self.schedule)
         
     def test(self):
         appts = self.schedule.appts
