@@ -719,7 +719,7 @@ class Greedy(AvailabilityController):
                             print(greedy_str)
                         # Remove the assigned appointment from the other
                         # interpreters' appointment lists
-                        appt_keys = set(appts.keys()) - {[interpreter]}
+                        appt_keys = set(appts.keys()) - set([interpreter])
                         for interp_key in appt_keys:
                             if greedy_appt in appts[interp_key]:
                                 appts[interp_key].remove(greedy_appt)
@@ -777,7 +777,7 @@ class BruteForce(AvailabilityController):
         """
         AvailabilityController.__init__(self, schedule)
 
-    def dfs_weighted(self, tree, start, finish, interpreter, lst):
+    def dfs_weighted(self, tree, start, finish, interpreter):
         """
         DFS for max weight appointment list in the power set of appt lists
         :param tree: An adjacency list using idnums to represent node number
@@ -795,7 +795,6 @@ class BruteForce(AvailabilityController):
         while stack:
             (vertex, path) = stack.pop()
             for next in tree[vertex] - set(path):
-                lst.append(path + [next])
                 if next == finish:
                     weight = sum([appts_dict[ID].priority for ID in
                                   (path + [next]) if ID in appts_dict])
@@ -950,36 +949,6 @@ class BruteForce(AvailabilityController):
         return self.group_gen_all_paths(self.dfs_weighted_by_assignment,
                                         self.interpreters, printing)
 
-    @timer
-    def debug_genpaths(self, interpreter):
-        """
-        Used to time how long it takes to process increasingly large path
-        sizes. I use it to find the node where performance starts to suffer
-        :param interpreter: An Interpreter object
-        :return: None
-        """
-        self.reset()
-        self.gen_schedule_dict(interpreter, self.appts_to_assign)
-        for node in [node for node in self.schedule_dict.keys() if node > 1]:
-            print("Calculating from nodes 1 to", node)
-            self.test_node_paths(self.schedule_dict, 1, node, interpreter)
-
-    @timer
-    def test_node_paths(self, tree, start, finish, interpreter):
-        """
-        A debug script used to generate and print the optimal schedule
-        :param tree: An adjacency list in form {idnum0: [idnum1, ...]}
-        :param start: A Time object at or after which appts start
-        :param finish: A Time object at or before which appts finish
-        :param interpreter: An Interpreter object
-        :return: A list
-        """
-        global lst1
-        lst1 = []
-        lst = list(self.dfs_weighted(tree, start, finish, interpreter, lst1))
-        print("Finished:", len(lst), "paths generated")
-        return lst1
-
 
 class BruteForceDP(AvailabilityController):
     """
@@ -1058,9 +1027,10 @@ class BruteForceDP(AvailabilityController):
         return appt_ids
 
     def schedule_optimal(self):
+        self.reset()
         for interpreter in self.interpreters:
             appt_ids = self.gen_optimal(interpreter)
-            appts = self.get_jobs_with_ids(appt_ids)
+            appts = self.get_jobs_with_ids(appt_ids[1:])
             self.group_assign(interpreter, appts)
 
 
