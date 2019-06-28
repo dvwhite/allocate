@@ -1042,8 +1042,28 @@ class BruteForceDP(AvailabilityController):
         for idx in appt_lst[1:]:
             print(idx, self.appts_to_assign[idx])
 
+    def gen_optimal(self, interpreter):
+        """
+        Generates a list of the optimal appt choices for interpreter
+        :param interpreter: An Interpreter object
+        :return: The optimal list of appts for interpreter to cover
+        """
+        self.update_valid_choices(interpreter.shift_start,
+                                  self.appts_to_assign)
+        appts = self.valid_choices[interpreter]
+        optimal = self.compute_optimal(len(appts) - 1)
+        appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
+        appt_ids.sort()
+        return appt_ids
 
-class Optimum(BruteForce, Greedy, MonteCarlo):
+    def schedule_optimal(self):
+        for interpreter in self.interpreters:
+            appt_ids = self.gen_optimal(interpreter)
+            appts = self.get_jobs_with_ids(appt_ids)
+            self.group_assign(interpreter, appts)
+
+
+class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
     """
     Compares the performance of scheduling algorithms to display the optimum
     """
@@ -1053,6 +1073,7 @@ class Optimum(BruteForce, Greedy, MonteCarlo):
         :param schedule: A Schedule object
         """
         BruteForce.__init__(self, schedule)
+        BruteForceDP.__init__(self, schedule)
         Greedy.__init__(self, schedule)
         MonteCarlo.__init__(self, schedule)
         self.default_time = Time("6:00", TIME_FORMAT)
@@ -1063,7 +1084,8 @@ class Optimum(BruteForce, Greedy, MonteCarlo):
         self.schedule_methods = [self.classic_greedy_schedule,
                                  self.balanced_greedy_schedule,
                                  self.assign_optimal_schedule,
-                                 self.assign_optimal_job]
+                                 self.assign_optimal_job,
+                                 self.schedule_optimal]
       
     def call_method_default(self, method, printing=False):
         """
