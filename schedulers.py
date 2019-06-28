@@ -309,10 +309,11 @@ class JobSupervisor(Reinitializer):
         appt_is_compatible = appt1.is_compatible(appt2)
         patient_is_compatible = (interpreter.is_compatible(appt1.patient) and
                                  interpreter.is_compatible(appt2.patient))
-        shift_is_compatible = (
-                self.is_compatible_with_shift(interpreter, appt1) and
-                self.is_compatible_with_shift(interpreter, appt2)
-        )
+        compatible_appt1 = self.is_compatible_with_shift(interpreter, appt1)
+        compatible_appt2 = self.is_compatible_with_shift(interpreter, appt1)
+        if appt2 == self.default_appt:
+            compatible_appt2 = True
+        shift_is_compatible = compatible_appt1 and compatible_appt2
         return (appt_is_compatible and
                 patient_is_compatible and
                 shift_is_compatible)
