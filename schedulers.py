@@ -983,6 +983,8 @@ class BruteForce(AvailabilityController):
 class BruteForceDP(AvailabilityController):
     """
     Uses memoization to reduce the computational complexity of brute force
+    I retain the default one-letter variable names from the memoized
+    weighted interval scheduling algorithm to remind me what they represent
     """
     def __init__(self, schedule):
         """
@@ -1004,10 +1006,10 @@ class BruteForceDP(AvailabilityController):
         weights = dict()
         weights[0] = 0
         for appt in appts[1:]:
-            j = appts.index(appt)
+            idx = appts.index(appt)
             p = appt.get_prior_num(appts)
-            weights[j] = max(appt.priority + weights[p],
-                             weights[j-1])
+            weights[idx] = max(appt.priority + weights[p],
+                               weights[idx-1])
         return weights
 
     def compute_optimal(self, j):
@@ -1018,7 +1020,6 @@ class BruteForceDP(AvailabilityController):
         :param j: the idnum of the interval
         :return: A string
         """
-        print("j:", j)
         if j == 0:
             return 0
         else:
