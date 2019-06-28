@@ -58,6 +58,26 @@ loc3 = Location(x=3,
                 building="East Wing",
                 clinic="Emergency Room")
 
+loc4 = Location(x=0,
+                y=-1,
+                building="Central Hospital",
+                clinic="GI Clinic")
+
+loc5 = Location(x=-2,
+                y=-2,
+                building="East Wing",
+                clinic="General Med")
+
+loc6 = Location(x=-1,
+                y=2,
+                building="Central Hospital",
+                clinic="Pulmonary Clinic")
+
+loc7 = Location(x=-5,
+                y=-3,
+                building="West Wing",
+                clinic="General Surgery Clinic")
+
 appt1 = Appointment(idnum=1,
                     start="8:00",
                     duration_in_mins=10,
@@ -122,158 +142,158 @@ appt7 = Appointment(idnum=7,
                     provider="Dr. Jane",
                     interpreter="")
 
-appt8 = Appointment(idnum=8, start='08:00', duration_in_mins=75,
-                    patient=patient1, location=loc2, priority=85,
+appt8 = Appointment(idnum=0, start='08:00', duration_in_mins=75,
+                    patient=patient1, location=loc4, priority=85,
                     provider="Dr. Jane", interpreter='')
-appt9 = Appointment(idnum=9, start="08:00", duration_in_mins=55,
-                    patient=patient1, location=loc2, priority=215,
+appt9 = Appointment(idnum=1, start="08:00", duration_in_mins=55,
+                    patient=patient1, location=loc5, priority=215,
                     provider="Dr. Jane", interpreter='')
-appt10 = Appointment(idnum=10, start="08:00", duration_in_mins=435,
-                     patient=patient1, location=loc2, priority=85,
+appt10 = Appointment(idnum=2, start="08:00", duration_in_mins=375,
+                     patient=patient1, location=loc6, priority=85,
                      provider="Dr. Jane", interpreter='')
-appt11 = Appointment(idnum=11, start="08:15", duration_in_mins=60,
-                     patient=patient1, location=loc2, priority=213,
+appt11 = Appointment(idnum=3, start="08:15", duration_in_mins=60,
+                     patient=patient1, location=loc6, priority=213,
                      provider="Dr. Jane", interpreter='')
-appt12 = Appointment(idnum=12, start="08:30", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=215,
+appt12 = Appointment(idnum=4, start="08:30", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt13 = Appointment(idnum=13, start="08:30", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=115,
+appt13 = Appointment(idnum=5, start="08:30", duration_in_mins=30,
+                     patient=patient1, location=loc7, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt14 = Appointment(idnum=14, start="09:00", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=215,
+appt14 = Appointment(idnum=6, start="09:00", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt15 = Appointment(idnum=15, start="09:00", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=115,
+appt15 = Appointment(idnum=7, start="09:00", duration_in_mins=35,
+                     patient=patient1, location=loc5, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt16 = Appointment(idnum=16, start="09:00", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=212,
+appt16 = Appointment(idnum=8, start="09:00", duration_in_mins=75,
+                     patient=patient1, location=loc6, priority=212,
                      provider="Dr. Jane", interpreter='')
-appt17 = Appointment(idnum=17, start="09:15", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=105,
+appt17 = Appointment(idnum=9, start="09:15", duration_in_mins=75,
+                     patient=patient1, location=loc4, priority=105,
                      provider="Dr. Jane", interpreter='')
-appt18 = Appointment(idnum=18, start="09:20", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=215,
+appt18 = Appointment(idnum=10, start="09:20", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt19 = Appointment(idnum=19, start="09:50", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt19 = Appointment(idnum=11, start="09:50", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt20 = Appointment(idnum=20, start="10:00", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=95,
+appt20 = Appointment(idnum=12, start="10:00", duration_in_mins=35,
+                     patient=patient1, location=loc5, priority=95,
                      provider="Dr. Jane", interpreter='')
-appt21 = Appointment(idnum=21, start="10:00", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=115,
+appt21 = Appointment(idnum=13, start="10:00", duration_in_mins=35,
+                     patient=patient1, location=loc4, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt22 = Appointment(idnum=22, start="10:00", duration_in_mins=105,
-                     patient=patient1, location=loc2, priority=125,
+appt22 = Appointment(idnum=14, start="10:00", duration_in_mins=105,
+                     patient=patient1, location=loc4, priority=125,
                      provider="Dr. Jane", interpreter='')
-appt23 = Appointment(idnum=23, start="10:10", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt23 = Appointment(idnum=15, start="10:10", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt24 = Appointment(idnum=24, start="10:15", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=205,
+appt24 = Appointment(idnum=16, start="10:15", duration_in_mins=45,
+                     patient=patient1, location=loc5, priority=205,
                      provider="Dr. Jane", interpreter='')
-appt25 = Appointment(idnum=25, start="10:15", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=85,
+appt25 = Appointment(idnum=17, start="10:15", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=85,
                      provider="Dr. Jane", interpreter='')
-appt26 = Appointment(idnum=26, start="10:30", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt26 = Appointment(idnum=18, start="10:30", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt27 = Appointment(idnum=27, start="10:40", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=115,
+appt27 = Appointment(idnum=19, start="10:40", duration_in_mins=35,
+                     patient=patient1, location=loc7, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt28 = Appointment(idnum=28, start="11:00", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=115,
+appt28 = Appointment(idnum=20, start="11:00", duration_in_mins=30,
+                     patient=patient1, location=loc7, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt29 = Appointment(idnum=29, start="11:00", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=205,
+appt29 = Appointment(idnum=21, start="11:00", duration_in_mins=35,
+                     patient=patient1, location=loc7, priority=205,
                      provider="Dr. Jane", interpreter='')
-appt30 = Appointment(idnum=30, start="11:00", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=205,
+appt30 = Appointment(idnum=22, start="11:00", duration_in_mins=30,
+                     patient=patient1, location=loc7, priority=205,
                      provider="Dr. Jane", interpreter='')
-appt31 = Appointment(idnum=31, start="11:00", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=212,
+appt31 = Appointment(idnum=23, start="11:00", duration_in_mins=75,
+                     patient=patient1, location=loc6, priority=212,
                      provider="Dr. Jane", interpreter='')
-appt32 = Appointment(idnum=32, start="11:20", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=215,
+appt32 = Appointment(idnum=24, start="11:20", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt33 = Appointment(idnum=33, start="12:15", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt33 = Appointment(idnum=25, start="12:15", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt34 = Appointment(idnum=34, start="12:30", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=115,
+appt34 = Appointment(idnum=26, start="12:30", duration_in_mins=45,
+                     patient=patient1, location=loc4, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt35 = Appointment(idnum=35, start="12:45", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=95,
+appt35 = Appointment(idnum=27, start="12:45", duration_in_mins=30,
+                     patient=patient1, location=loc5, priority=95,
                      provider="Dr. Jane", interpreter='')
-appt36 = Appointment(idnum=36, start="12:55", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=212,
+appt36 = Appointment(idnum=28, start="12:55", duration_in_mins=75,
+                     patient=patient1, location=loc6, priority=212,
                      provider="Dr. Jane", interpreter='')
-appt37 = Appointment(idnum=37, start="13:00", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=205,
+appt37 = Appointment(idnum=29, start="13:00", duration_in_mins=45,
+                     patient=patient1, location=loc7, priority=205,
                      provider="Dr. Jane", interpreter='')
-appt38 = Appointment(idnum=38, start="13:00", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=195,
+appt38 = Appointment(idnum=30, start="13:00", duration_in_mins=45,
+                     patient=patient1, location=loc7, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt39 = Appointment(idnum=39, start="13:00", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=215,
+appt39 = Appointment(idnum=31, start="13:00", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt40 = Appointment(idnum=40, start="13:05", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=215,
+appt40 = Appointment(idnum=32, start="13:05", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt41 = Appointment(idnum=41, start="13:30", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=212,
+appt41 = Appointment(idnum=33, start="13:30", duration_in_mins=45,
+                     patient=patient1, location=loc7, priority=212,
                      provider="Dr. Jane", interpreter='')
-appt42 = Appointment(idnum=42, start="13:30", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=195,
+appt42 = Appointment(idnum=34, start="13:30", duration_in_mins=45,
+                     patient=patient1, location=loc7, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt43 = Appointment(idnum=43, start="13:40", duration_in_mins=35,
-                     patient=patient1, location=loc2, priority=115,
+appt43 = Appointment(idnum=35, start="13:40", duration_in_mins=35,
+                     patient=patient1, location=loc7, priority=115,
                      provider="Dr. Jane", interpreter='')
-appt44 = Appointment(idnum=44, start="13:40", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=215,
+appt44 = Appointment(idnum=36, start="13:40", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt45 = Appointment(idnum=45, start="13:45", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=105,
+appt45 = Appointment(idnum=37, start="13:45", duration_in_mins=75,
+                     patient=patient1, location=loc6, priority=105,
                      provider="Dr. Jane", interpreter='')
-appt46 = Appointment(idnum=46, start="13:55", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt46 = Appointment(idnum=38, start="13:55", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt47 = Appointment(idnum=47, start="14:00", duration_in_mins=135,
-                     patient=patient1, location=loc2, priority=85,
+appt47 = Appointment(idnum=39, start="14:00", duration_in_mins=135,
+                     patient=patient1, location=loc6, priority=85,
                      provider="Dr. Jane", interpreter='')
-appt48 = Appointment(idnum=48, start="14:00", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=85,
+appt48 = Appointment(idnum=40, start="14:00", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=85,
                      provider="Dr. Jane", interpreter='')
-appt49 = Appointment(idnum=49, start="14:00", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=85,
+appt49 = Appointment(idnum=41, start="14:00", duration_in_mins=30,
+                     patient=patient1, location=loc7, priority=85,
                      provider="Dr. Jane", interpreter='')
-appt50 = Appointment(idnum=50, start="14:00", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt50 = Appointment(idnum=42, start="14:00", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt51 = Appointment(idnum=51, start="14:00", duration_in_mins=75,
-                     patient=patient1, location=loc2, priority=212,
+appt51 = Appointment(idnum=43, start="14:00", duration_in_mins=75,
+                     patient=patient1, location=loc6, priority=212,
                      provider="Dr. Jane", interpreter='')
-appt52 = Appointment(idnum=52, start="14:30", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=75,
+appt52 = Appointment(idnum=44, start="14:30", duration_in_mins=30,
+                     patient=patient1, location=loc7, priority=75,
                      provider="Dr. Jane", interpreter='')
-appt53 = Appointment(idnum=53, start="14:40", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=195,
+appt53 = Appointment(idnum=45, start="14:40", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt54 = Appointment(idnum=54, start="15:00", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=195,
+appt54 = Appointment(idnum=46, start="15:00", duration_in_mins=55,
+                     patient=patient1, location=loc4, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt55 = Appointment(idnum=55, start="15:00", duration_in_mins=55,
-                     patient=patient1, location=loc2, priority=215,
+appt55 = Appointment(idnum=47, start="15:00", duration_in_mins=55,
+                     patient=patient1, location=loc5, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt56 = Appointment(idnum=56, start="15:30", duration_in_mins=30,
-                     patient=patient1, location=loc2, priority=215,
+appt56 = Appointment(idnum=48, start="15:30", duration_in_mins=30,
+                     patient=patient1, location=loc6, priority=215,
                      provider="Dr. Jane", interpreter='')
-appt57 = Appointment(idnum=57, start="16:00", duration_in_mins=45,
-                     patient=patient1, location=loc2, priority=212,
+appt57 = Appointment(idnum=49, start="16:00", duration_in_mins=45,
+                     patient=patient1, location=loc6, priority=212,
                      provider="Dr. Jane", interpreter='')
 
-bf_appts = [appt7, appt8, appt9, appt10, appt11, appt12, 
+bf_appts = [appt8, appt9, appt10, appt11, appt12,
             appt13, appt14, appt15, appt16, appt17, appt18, 
             appt19, appt20, appt21, appt22, appt23, appt24,
             appt25, appt26, appt27, appt28, appt29, appt30,
