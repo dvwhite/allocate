@@ -94,8 +94,10 @@ class Appointment(object):
         finish = [interval.finish for interval in others]
         rightmost = bisect.bisect_right(finish, start[self_idx])
         others_rightmost = copy.deepcopy(others[:rightmost])
-        others_rightmost.sort(reverse=True)
-        for other in others_rightmost:
+        compatible_idx = [others.index(other) for other in others_rightmost]
+        compatible_idx.sort(reverse=True)
+        for idx in compatible_idx:
+            other = others[idx]
             if other.is_compatible(self):
                 return other
 
