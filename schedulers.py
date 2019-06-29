@@ -310,7 +310,7 @@ class JobSupervisor(Reinitializer):
         patient_is_compatible = (interpreter.is_compatible(appt1.patient) and
                                  interpreter.is_compatible(appt2.patient))
         compatible_appt1 = self.is_compatible_with_shift(interpreter, appt1)
-        compatible_appt2 = self.is_compatible_with_shift(interpreter, appt1)
+        compatible_appt2 = self.is_compatible_with_shift(interpreter, appt2)
         if appt2 == self.default_appt:
             compatible_appt2 = True
         shift_is_compatible = compatible_appt1 and compatible_appt2
@@ -1027,6 +1027,7 @@ class BruteForceDP(AvailabilityController):
         """
         self.update_valid_choices(interpreter.shift_start,
                                   self.appts_to_assign)
+        self.appt_weights = self.calculate_weights(self.appts_to_assign)
         appts = self.valid_choices[interpreter]
         optimal = self.compute_optimal(len(appts) - 1)
         appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
@@ -1037,13 +1038,13 @@ class BruteForceDP(AvailabilityController):
         self.reset()
         for interpreter in self.interpreters:
             appt_ids = self.gen_optimal(interpreter)
-            appts = self.get_jobs_with_ids(appt_ids[1:])
+            appts = [self.appts_to_assign[idx] for idx in appt_ids[1:]]
             self.group_assign(interpreter, appts)
 
 
 class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
     """
-    Compares the performance of scheduling algorithms to display the optimum
+    Compares the performance of scheduling algorithms
     """
     def __init__(self, schedule):
         """
