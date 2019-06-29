@@ -316,4 +316,4 @@ patients = [patient1, patient2]
 test_schedule = Schedule(appts=appts,
                          interpreters=interpreters)
 bf_test_schedule = Schedule(appts=bf_appts,
-                            interpreters=interpreters)
+                            interpreters=[interpreters[0], interpreters[1]])
