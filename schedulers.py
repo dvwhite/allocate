@@ -963,6 +963,7 @@ class BruteForceDP(AvailabilityController):
         """
         AvailabilityController.__init__(self, schedule)
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
+        self.last_id = 0
 
     @staticmethod
     def calculate_weights(appts):
@@ -996,7 +997,13 @@ class BruteForceDP(AvailabilityController):
             appt = self.appts_to_assign[j]
             v = appt.priority
             p = appt.get_prior_num(self.appts_to_assign)
-            if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
+            last_id_found = self.get_job_with_id(self.last_id)
+
+            # It gets tricky with appt distance compatibility so I exclude
+            # j from solution set when distance messed up p computation
+            if (v + self.appt_weights[p]) >= self.appt_weights[j-1] and \
+                    appt.is_compatible(last_id_found):
+                self.last_id = j
                 return str(j) + ", " + str(self.compute_optimal(p))
             else:
                 return self.compute_optimal(j-1)
