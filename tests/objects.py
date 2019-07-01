@@ -50,38 +50,38 @@ loc1 = Location(x=0,
                 clinic="Radiology")
 
 # 4, 4
-loc2 = Location(x=0,
-                y=0,
+loc2 = Location(x=4,
+                y=4,
                 building="West Wing",
                 clinic="Ophthalmology")
 
 # 3, 4
-loc3 = Location(x=0,
-                y=0,
+loc3 = Location(x=3,
+                y=4,
                 building="East Wing",
                 clinic="Emergency Room")
 
 # 0, -1
 loc4 = Location(x=0,
-                y=0,
+                y=-1,
                 building="Central Hospital",
                 clinic="GI Clinic")
 
 # -2, -2
-loc5 = Location(x=0,
-                y=0,
+loc5 = Location(x=-2,
+                y=-2,
                 building="East Wing",
                 clinic="General Med")
 
 # -1, 2
-loc6 = Location(x=0,
-                y=0,
+loc6 = Location(x=-1,
+                y=2,
                 building="Central Hospital",
                 clinic="Pulmonary Clinic")
 
 # -5, -3
-loc7 = Location(x=0,
-                y=0,
+loc7 = Location(x=-5,
+                y=-3,
                 building="West Wing",
                 clinic="General Surgery Clinic")
 
