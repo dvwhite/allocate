@@ -101,13 +101,31 @@ class Appointment(object):
             if other.is_compatible(self):
                 return other
 
+    def calc_prior_by_arrival(self, others):
+        """
+        Returns the idnum of the rightmost compatible interval
+        :param others: a list of Interval objects
+        :return: An Interval object
+        """
+        self_idx = others.index(self)
+        start = [interval.start for interval in others]
+        arrival = [calc_arrival(interval, self) for interval in others]
+        rightmost = bisect.bisect_right(arrival, start[self_idx])
+        others_rightmost = copy.deepcopy(others[:rightmost])
+        compatible_idx = [others.index(other) for other in others_rightmost]
+        compatible_idx.sort(reverse=True)
+        for idx in compatible_idx:
+            other = others[idx]
+            if other.is_compatible(self):
+                return other
+
     def get_prior_num(self, others):
         """
         Handle output of calc_prior, coercing None to 0
         :param others: a list of Interval objects
         :return: An integer idnum
         """
-        prior = self.calc_prior(others)
+        prior = self.calc_prior_by_arrival(others)
         if prior is None:
             prior_num = 0
         else:
