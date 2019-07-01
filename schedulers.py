@@ -920,11 +920,10 @@ class BruteForce(AvailabilityController):
             if printing:
                 print("Finding optimal paths for " + str(interpreter) + "...")
             self.gen_all_paths(tree_function, interpreter)
-            if interpreter in self.best_paths:
-                appt_ids = [self.appts_dict[ID] for ID in
-                            (self.best_paths[interpreter][1])
-                            if ID in self.appts_dict]
-                jobs = self.get_jobs_with_ids(appt_ids)
+            if interpreter in self.best_paths.keys():
+                jobs = [self.appts_dict[ID] for ID in
+                        (self.best_paths[interpreter][1])
+                        if ID in self.appts_dict]
                 self.group_assign(interpreter, jobs)
         sched_copy = self.schedule.copy()
         return sched_copy
@@ -963,7 +962,6 @@ class BruteForceDP(AvailabilityController):
         """
         AvailabilityController.__init__(self, schedule)
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
-        self.last_id = 0
 
     @staticmethod
     def calculate_weights(appts):
@@ -997,13 +995,7 @@ class BruteForceDP(AvailabilityController):
             appt = self.appts_to_assign[j]
             v = appt.priority
             p = appt.get_prior_num(self.appts_to_assign)
-            last_id_found = self.get_job_with_id(self.last_id)
-
-            # It gets tricky with appt distance compatibility so I exclude
-            # j from solution set when distance messed up p computation
-            if (v + self.appt_weights[p]) >= self.appt_weights[j-1] and \
-                    appt.is_compatible(last_id_found):
-                self.last_id = j
+            if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
                 return str(j) + ", " + str(self.compute_optimal(p))
             else:
                 return self.compute_optimal(j-1)
@@ -1017,7 +1009,7 @@ class BruteForceDP(AvailabilityController):
         appt_lst.sort()
         print("")
         for idx in appt_lst[1:]:
-            print(idx, self.appts_to_assign[idx])
+            print(self.appts_to_assign[idx])
 
     def gen_optimal(self, interpreter):
         """
@@ -1032,7 +1024,7 @@ class BruteForceDP(AvailabilityController):
         optimal = self.compute_optimal(len(appts) - 1)
         appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
         appt_ids.sort()
-        return appt_ids
+        return [self.appts_to_assign[idx].idnum for idx in appt_ids]
 
     def schedule_optimal(self):
         self.reset()
@@ -1040,6 +1032,7 @@ class BruteForceDP(AvailabilityController):
             appt_ids = self.gen_optimal(interpreter)
             appts = [self.appts_to_assign[idx] for idx in appt_ids[1:]]
             self.group_assign(interpreter, appts)
+        return self.schedule.copy()
 
 
 class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
