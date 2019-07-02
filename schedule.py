@@ -36,7 +36,7 @@ class Appointment(object):
         self.priority = priority
         self.provider = provider
         self.interpreter = interpreter
-        self.late_allowed = 0
+        self.late_allowed = 15
 
     def brief(self):
         """
@@ -81,6 +81,7 @@ class Appointment(object):
         first_appt = appts[0]
         second_appt = appts[1]
         arrival_time = calc_arrival(first_appt, second_appt)
+        second_appt.start.add_time(hours=0, minutes=self.late_allowed)
         return arrival_time <= second_appt.start
 
     def calc_prior(self, others):
@@ -125,7 +126,7 @@ class Appointment(object):
         :param others: a list of Interval objects
         :return: An integer idnum
         """
-        prior = self.calc_prior_by_arrival(others)
+        prior = self.calc_prior(others)
         if prior is None:
             prior_num = 0
         else:
