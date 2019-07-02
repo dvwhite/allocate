@@ -383,8 +383,7 @@ class JobSupervisor(Reinitializer):
         :param appt: The appointment to assign interpreter to
         :return: None
         """
-        if self.can_assign(interpreter, appt) and \
-                appt in self.appts_to_assign:
+        if self.can_assign(interpreter, appt):
             self.assign(interpreter, appt)
 
     def group_assign(self, interpreter, jobs):
@@ -399,13 +398,14 @@ class JobSupervisor(Reinitializer):
 
     def group_safe_assign(self, interpreter, jobs):
         """
-        Take a list of jobs and assign interpreter to each
+        Take a list of jobs and assign interpreter only if able to cover job
         :param interpreter: An Interpreter object
         :param jobs: A list of Appointment objects
         :return: None
         """
         for job in jobs:
-            self.assign(interpreter, job)
+            self.safe_assign(interpreter, job)
+
 
 class AvailabilityController(JobSupervisor):
     """
