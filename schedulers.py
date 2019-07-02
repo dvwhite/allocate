@@ -284,7 +284,7 @@ class JobSupervisor(Reinitializer):
                     if len(appt.interpreter) > 0])
 
     @staticmethod
-    def is_compatible_with_shift(interpreter, appt):
+    def is_appt_in_shift(interpreter, appt):
         """
         Check if appt intervals are compatible with shift start and end times
         :param interpreter: An Interpreter object
@@ -296,27 +296,29 @@ class JobSupervisor(Reinitializer):
             return True
         return False
 
-    def can_assign(self, interpreter, appt1, appt2=None):
+    def can_assign(self, interpreter, new_job, last_job=None):
         """
-        Test if it's possible to assign both appt1 and appt2 to interpreter
+        Test if possible to assign both new_job and last_job to interpreter
         :param interpreter: An Interpreter object
-        :param appt1: An Appointment object (order ISN'T important)
-        :param appt2: An Appointment object (order ISN'T important)
+        :param new_job: An Appointment object (order IS important)
+        :param last_job: An Appointment object (order IS important)
         :return: A Boolean indicating that it can be assigned without overlap
         """
-        if appt2 is None:
-            appt2 = self.get_last_job(interpreter)
-        appt_is_compatible = appt1.is_compatible(appt2)
-        patient_is_compatible = (interpreter.is_compatible(appt1.patient) and
-                                 interpreter.is_compatible(appt2.patient))
-        compatible_appt1 = self.is_compatible_with_shift(interpreter, appt1)
-        compatible_appt2 = self.is_compatible_with_shift(interpreter, appt2)
-        if appt2 == self.default_appt:
-            compatible_appt2 = True
-        shift_is_compatible = compatible_appt1 and compatible_appt2
+        if last_job is None:
+            last_job = self.get_last_job(interpreter)
+        appt_is_compatible = new_job.is_compatible(last_job)
+        patient_is_compatible = (interpreter.is_compatible(new_job.patient) and
+                                 interpreter.is_compatible(last_job.patient))
+        new_job_in_shift = self.is_appt_in_shift(interpreter, new_job)
+        last_job_in_shift = self.is_appt_in_shift(interpreter, last_job)
+        if last_job == self.default_appt:
+            last_job_in_shift = True
+        shift_is_compatible = new_job_in_shift and last_job_in_shift
+        needs_to_assign = new_job in self.appts_to_assign
         return (appt_is_compatible and
                 patient_is_compatible and
-                shift_is_compatible)
+                shift_is_compatible and
+                needs_to_assign)
 
     def can_insert_job(self, interpreter, appt):
         """
@@ -357,8 +359,7 @@ class JobSupervisor(Reinitializer):
         :param appt: An Appointment object
         :return: None
         """
-        if (not self.can_assign(interpreter, appt) or
-                appt not in self.appts_to_assign):
+        if not self.can_assign(interpreter, appt):
             raise ValueError('Interpreter cannot be assigned to:'
                              + '\n' + str(appt) + ".")
         try:
@@ -375,6 +376,17 @@ class JobSupervisor(Reinitializer):
         self.appts_to_assign.remove(appt)
         self.schedule.impact += appt.priority
 
+    def safe_assign(self, interpreter, appt):
+        """
+        Only assign if interpreter satisfies self.can_assign criteria/ion
+        :param interpreter: The Interpreter object overing appt
+        :param appt: The appointment to assign interpreter to
+        :return: None
+        """
+        if self.can_assign(interpreter, appt) and \
+                appt in self.appts_to_assign:
+            self.assign(interpreter, appt)
+
     def group_assign(self, interpreter, jobs):
         """
         Take a list of jobs and assign interpreter to each
@@ -385,6 +397,15 @@ class JobSupervisor(Reinitializer):
         for job in jobs:
             self.assign(interpreter, job)
 
+    def group_safe_assign(self, interpreter, jobs):
+        """
+        Take a list of jobs and assign interpreter to each
+        :param interpreter: An Interpreter object
+        :param jobs: A list of Appointment objects
+        :return: None
+        """
+        for job in jobs:
+            self.assign(interpreter, job)
 
 class AvailabilityController(JobSupervisor):
     """
