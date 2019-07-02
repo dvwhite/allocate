@@ -378,7 +378,7 @@ class JobSupervisor(Reinitializer):
 
     def safe_assign(self, interpreter, appt):
         """
-        Only assign if interpreter satisfies self.can_assign criteria/ion
+        Only assign if interpreter satisfies self.can_assign criteria
         :param interpreter: The Interpreter object overing appt
         :param appt: The appointment to assign interpreter to
         :return: None
@@ -805,7 +805,6 @@ class BruteForce(AvailabilityController):
         :param start: The start time as a Time object
         :param finish: The finish time as a Time object
         :param interpreter: An Interpreter object
-        :param lst: A list used for debugging, to be removed
         :return: A generator object
         """
         stack = [(start, [start])]
@@ -844,14 +843,13 @@ class BruteForce(AvailabilityController):
         while stack:
             (vertex, path) = stack.pop()
             for next in tree[vertex] - set(path):
-                if start < next:
-                    break
-                elif next == finish:
+                if next == finish:
                     appt_wts = [appts_dict[ID].priority for ID in
                                 (path + [next]) if ID in appts_dict]
-                    inter_wts = [interpreter.jobs[
-                        appts_dict[ID].location.building
-                        ] for ID in (path + [next]) if ID in appts_dict]
+                    inter_wts = [interpreter.assignments[
+                                     appts_dict[ID].location.building
+                                 ]
+                                 for ID in (path + [next]) if ID in appts_dict]
                     weight = sum_lists_product(appt_wts, inter_wts)
                     if weight > max_weight:
                         self.best_paths[interpreter] = (weight, path + [next])
