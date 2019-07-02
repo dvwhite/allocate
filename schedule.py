@@ -82,7 +82,7 @@ class Appointment(object):
         second_appt = appts[1]
         arrival_time = calc_arrival(first_appt, second_appt)
         second_time = second_appt.start.copy()
-        second_time.start.add_time(hours=0, minutes=self.late_allowed)
+        second_time.add_time(hours=0, minutes=self.late_allowed)
         return arrival_time <= second_time
 
     def calc_prior(self, others):
