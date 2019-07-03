@@ -687,7 +687,7 @@ class Greedy(AvailabilityController):
         return greedy_appt, greedy_str
 
     @timer
-    def classic_greedy_schedule(self, time, optimal, printing=False):
+    def create_classic_greedy_schedule(self, time, optimal, printing=False):
         """
         Assigns appointments using a classic greedy strategy
         :param time: A Time object indicating minimum sᵢ
@@ -722,7 +722,7 @@ class Greedy(AvailabilityController):
         return copy.deepcopy(self.schedule)
 
     @timer
-    def balanced_greedy_schedule(self, time, optimal, printing=False):
+    def create_balanced_greedy_schedule(self, time, optimal, printing=False):
         """
         Assigns appointments while balancing the load on each employee.
         :param time: A Time object indicating minimum sᵢ
@@ -793,10 +793,10 @@ class Greedy(AvailabilityController):
                            in interpreter_sublist]) + "...")
             self.interpreters = interpreter_sublist
             if balanced:
-                self.balanced_greedy_schedule(Time("00:00",  TIME_FORMAT),
+                self.create_balanced_greedy_schedule(Time("00:00",  TIME_FORMAT),
                                               printing)
             else:
-                self.classic_greedy_schedule(Time("00:00",  TIME_FORMAT),
+                self.create_classic_greedy_schedule(Time("00:00",  TIME_FORMAT),
                                              optimal, printing)
             if printing:
                 print(self.schedule.brief())
@@ -970,7 +970,7 @@ class BruteForce(AvailabilityController):
         sched_copy = self.schedule.copy()
         return sched_copy
 
-    def assign_optimal_schedule(self, printing=False):
+    def create_bruteforce_schedule(self, printing=False):
         """
         Use dfs_weighted to generate the optimal schedule
         :param printing: A Boolean whether to print status messages
@@ -980,7 +980,7 @@ class BruteForce(AvailabilityController):
         return self.group_gen_all_paths(self.dfs_weighted,
                                         self.interpreters, printing)
     
-    def assign_optimal_job(self, printing=False):
+    def create_bruteforce_assignment(self, printing=False):
         """
         Use dfs_weighted_by_assignment to generate the optimal schedule
         :param printing: A Boolean whether to print status messages
@@ -1068,7 +1068,7 @@ class BruteForceDP(AvailabilityController):
         appt_ids.sort()
         return [self.appts_to_assign[idx].idnum for idx in appt_ids]
 
-    def schedule_optimal(self):
+    def create_cached_assignment(self):
         self.reset()
         for interpreter in self.interpreters:
             appt_ids = self.gen_optimal(interpreter)
@@ -1096,11 +1096,11 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
         self.max_repeated_result = max(self.default_trials // 4, 1)
         self.schedules = []
         self.has_compared = False
-        self.schedule_methods = [self.classic_greedy_schedule,
-                                 self.balanced_greedy_schedule,
-                                 self.assign_optimal_schedule,
-                                 self.assign_optimal_job,
-                                 self.schedule_optimal]
+        self.schedule_methods = [self.create_classic_greedy_schedule,
+                                 self.create_balanced_greedy_schedule,
+                                 self.create_bruteforce_schedule,
+                                 self.create_bruteforce_assignment,
+                                 self.create_cached_assignment]
       
     def call_method_default(self, method, printing=False):
         """
@@ -1112,13 +1112,16 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
         optimal = 'weight'  # default
         args = {self.monte_carlo_trials: [self.default_time,
                                           self.default_trials,
-                                          self.max_repeated_result, printing],
-                self.classic_greedy_schedule: [self.default_time, optimal,
+                                          self.max_repeated_result,
+                                          printing],
+                self.create_classic_greedy_schedule: [self.default_time,
+                                               optimal,
                                                printing],
-                self.balanced_greedy_schedule: [self.default_time, optimal,
+                self.create_balanced_greedy_schedule: [self.default_time,
+                                                optimal,
                                                 printing],
-                self.assign_optimal_schedule: [printing],
-                self.assign_optimal_job: [printing]}
+                self.create_bruteforce_schedule: [printing],
+                self.create_bruteforce_assignment: [printing]}
         if method in args.keys():
             lst = args[method]
             return method(*lst)
