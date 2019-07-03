@@ -225,6 +225,29 @@ class JobSupervisor(Reinitializer):
                 jobs_found.append(job)
         return jobs_found
 
+    def get_open_job_with_id(self, job_id):
+        """
+        Get the unassigned appointment from self.appts_to_assign with job_id
+        :param job_id: The appointment's idnum
+        :return: An appointment object
+        """
+        job = self.get_job_with_id(job_id)
+        if job in self.appts_to_assign:
+            return job
+
+    def get_open_jobs_with_ids(self, job_ids):
+        """
+        Get the unassigned appointments with the id numbers in ids
+        :param job_ids: A list of Appointment id numbers
+        :return: A list of Appointment objects
+        """
+        jobs_found = []
+        for job_id in job_ids:
+            job = self.get_open_job_with_id(job_id)
+            if job:
+                jobs_found.append(job)
+        return jobs_found
+
     def get_last_job(self, interpreter):
         """
         Get the last job worked by interpreter
@@ -1049,7 +1072,8 @@ class BruteForceDP(AvailabilityController):
         self.reset()
         for interpreter in self.interpreters:
             appt_ids = self.gen_optimal(interpreter)
-            appts = [self.appts_to_assign[idx] for idx in appt_ids[1:]]
+            appts = [appt for appt in self.appts_to_assign
+                     for idx in appt_ids[1:] if appt.idnum == idx]
             self.group_assign(interpreter, appts)
         return self.schedule.copy()
 
