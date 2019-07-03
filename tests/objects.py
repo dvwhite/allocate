@@ -51,7 +51,7 @@ loc1 = Location(x=0,
 
 # 4, 4
 loc2 = Location(x=4,
-                y=4,
+                y=-4,
                 building="West Wing",
                 clinic="Ophthalmology")
 
