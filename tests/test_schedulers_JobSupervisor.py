@@ -94,14 +94,14 @@ class TestClass(unittest.TestCase):
         # This test has appt start at 8:45 and appt finish at 10:05
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 8:45, and 12:30 >= 10:05, so this test should PASS
-        is_compatible = self.cls.is_compatible_with_shift(self.interpreter,
+        is_compatible = self.cls.is_appt_in_shift(self.interpreter,
                                                           self.appt)
         self.assertTrue(is_compatible)
 
         # This test has appt start at 12:45 and appt finish at 13:25
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 12:45, but 12:30 < 13:25, so this test should FAIL
-        is_compatible = self.cls.is_compatible_with_shift(self.interpreter,
+        is_compatible = self.cls.is_appt_in_shift(self.interpreter,
                                                           self.appt2)
         self.assertFalse(is_compatible)
 
