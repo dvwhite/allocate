@@ -793,11 +793,11 @@ class Greedy(AvailabilityController):
                            in interpreter_sublist]) + "...")
             self.interpreters = interpreter_sublist
             if balanced:
-                self.create_balanced_greedy_schedule(Time("00:00",  TIME_FORMAT),
-                                              printing)
+                self.create_balanced_greedy_schedule(Time("00:00", TIME_FORMAT),
+                                                     printing)
             else:
-                self.create_classic_greedy_schedule(Time("00:00",  TIME_FORMAT),
-                                             optimal, printing)
+                self.create_classic_greedy_schedule(Time("00:00", TIME_FORMAT),
+                                                    optimal, printing)
             if printing:
                 print(self.schedule.brief())
         if printing:
@@ -1099,9 +1099,9 @@ class BruteForceDP(AvailabilityController):
         return [self.appts_to_assign[idx].idnum for idx in appt_ids]
 
     @timer
-    def create_cached_assignment(self):
+    def create_cached_assignment(self, interpreters):
         self.reset()
-        for interpreter in self.interpreters:
+        for interpreter in interpreters:
             self.update_weights(interpreter)
             appt_ids = self.gen_optimal(interpreter)
             self.reset_weights()
