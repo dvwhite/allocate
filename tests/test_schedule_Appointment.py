@@ -24,7 +24,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(self.appt, copied)
 
         # is_compatible
-        self.assertFalse(self.appt.is_compatible(self.appt))
+        self.assertTrue(self.appt.is_compatible(self.appt))
         self.assertTrue(self.appt.is_compatible(self.appt2))
 
         # distance_from
@@ -43,7 +43,7 @@ class TestClass(unittest.TestCase):
         # __str__
         appt_str = ("1|08:00|10|08:10|" +
                     "Joe Spanish|('East Wing', 'Emergency Room')" +
-                    "|100|Dr. John|Jose Gomez|0")
+                    "|100|Dr. John|Jose Gomez|15")
         self.assertEqual(str(self.appt), appt_str)
 
         # __hash__
