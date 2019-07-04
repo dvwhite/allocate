@@ -49,7 +49,7 @@ loc1 = Location(x=0,
                 building="Central Hospital",
                 clinic="Radiology")
 
-# 4, 4
+# 4, -4
 loc2 = Location(x=4,
                 y=-4,
                 building="West Wing",
@@ -316,4 +316,5 @@ patients = [patient1, patient2]
 test_schedule = Schedule(appts=appts,
                          interpreters=interpreters)
 bf_test_schedule = Schedule(appts=bf_appts,
-                            interpreters=[interpreters[0], interpreters[1]])
+                            interpreters=[interpreters[0], interpreters[1]]
+                            )
