@@ -95,14 +95,13 @@ class TestClass(unittest.TestCase):
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 8:45, and 12:30 >= 10:05, so this test should PASS
         is_compatible = self.cls.is_appt_in_shift(self.interpreter,
-                                                          self.appt)
+                                                  self.appt)
         self.assertTrue(is_compatible)
 
         # This test has appt start at 12:45 and appt finish at 13:25
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 12:45, but 12:30 < 13:25, so this test should FAIL
-        is_compatible = self.cls.is_appt_in_shift(self.interpreter,
-                                                          self.appt2)
+        is_compatible = self.cls.is_appt_in_shift(self.interpreter, self.appt2)
         self.assertFalse(is_compatible)
 
         # calc_impact
@@ -110,19 +109,19 @@ class TestClass(unittest.TestCase):
 
         # can_assign
         self.assertTrue(self.cls.can_assign(interpreters[0],
-                                                       appts[0],
-                                                       appts[1]))
+                                            appts[0],
+                                            appts[1]))
         self.assertFalse(self.cls.can_assign(interpreters[0],
-                                                        appts[0],
-                                                        appts[0]))
+                                             appts[0],
+                                             appts[0]))
 
         # can_insert_job
         self.cls.appts_to_assign.append(appt6)
         self.assertTrue(self.cls.can_insert_job(interpreters[0],
-                                                           appt6))
+                                                appt6))
         self.cls.assign(interpreters[0], appt6)
         self.assertFalse(self.cls.can_insert_job(interpreters[0],
-                                                            appt7))
+                                                 appt7))
 
         # assign
         # save existing assigned staff before reset
