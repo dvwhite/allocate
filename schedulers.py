@@ -1004,6 +1004,36 @@ class BruteForceDP(AvailabilityController):
         """
         AvailabilityController.__init__(self, schedule)
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
+        self.orig_weights = {}
+        self._cache_original_weights()
+
+    def _cache_original_weights(self):
+        """
+        Store a copy of the original appt weights at self.__init__
+        :return: None
+        """
+        # self.orig_weights is where the object stores the original weights
+        for appt in self.schedule.appts:
+            self.orig_weights[appt.idnum] = appt.priority
+
+    def reset_weights(self):
+        for appt in self.schedule.appts:
+            appt.priority = self.orig_weights[appt.idnum]
+
+    def update_weights(self, interpreter):
+        """
+        Update the appointment weights based on the interpreter's assignment
+        :param interpreter: An Interpreter object
+        :return: None
+        """
+        wts_sum = sum([val for key, val in interpreter.assignments.items()])
+        # I want to avoid unnecessary processing when all weights *= 1
+        if wts_sum != len(interpreter.assignments):
+            for appt in self.schedule.appts:
+                loc = appt.location.building
+                if loc in interpreter.assignments.keys():
+                    weight_modifier = interpreter.assignments[loc]
+                    appt.priority *= weight_modifier
 
     @staticmethod
     def calculate_weights(appts):
@@ -1068,10 +1098,13 @@ class BruteForceDP(AvailabilityController):
         appt_ids.sort()
         return [self.appts_to_assign[idx].idnum for idx in appt_ids]
 
+    @timer
     def create_cached_assignment(self):
         self.reset()
         for interpreter in self.interpreters:
+            self.update_weights(interpreter)
             appt_ids = self.gen_optimal(interpreter)
+            self.reset_weights()
             appts = [appt for appt in self.appts_to_assign
                      for idx in appt_ids[1:] if appt.idnum == idx]
             self.group_assign(interpreter, appts)
@@ -1104,7 +1137,7 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
       
     def call_method_default(self, method, printing=False):
         """
-        Call method of some class using pre-defined (default) parameters
+        Call class method using pre-defined (default) parameters
         :param method: The method to call
         :param printing: A Boolean whether to print status messages
         :return: Whatever the method called returns
@@ -1115,11 +1148,9 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
                                           self.max_repeated_result,
                                           printing],
                 self.create_classic_greedy_schedule: [self.default_time,
-                                               optimal,
-                                               printing],
+                                                      optimal, printing],
                 self.create_balanced_greedy_schedule: [self.default_time,
-                                                optimal,
-                                                printing],
+                                                       optimal, printing],
                 self.create_bruteforce_schedule: [printing],
                 self.create_bruteforce_assignment: [printing]}
         if method in args.keys():
