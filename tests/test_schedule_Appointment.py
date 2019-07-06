@@ -73,8 +73,8 @@ class TestClass(unittest.TestCase):
         self.assertEqual([appt1], compatible_copy)
 
         # We sort the indices of compatible appts in reverse order
-        # and test them for compatibility, until one is found
-        # doing so in reverse order ensures the compatible appt is
+        # and test them for compatibility, until one is found.
+        # Doing so in reverse order ensures the compatible appt is
         # the rightmost compatible appt
         compatible_idx = [others.index(other) for other in compatible_copy]
         compatible_idx.sort(reverse=True)
@@ -84,7 +84,19 @@ class TestClass(unittest.TestCase):
         self.assertEqual(appt1, appt3.calc_prior(others))
 
         # get_prior_num
-        pass
+        long_appt = Appointment(299999, "7:00", 360, appt1.patient,
+                                appt1.location, 10000, appt1.provider, "")
+        short_appt = Appointment(1000, "13:05", 1, appt1.patient,
+                                 appt1.location, 1000, appt1.provider, "")
+
+        others += [long_appt, short_appt]
+        self.assertEqual(others, [appt1, appt2, appt3, long_appt, short_appt])
+        prior = short_appt.calc_prior(others)
+        prior_idx = others.index(prior)
+        self.assertEqual(long_appt, prior)
+        self.assertEqual(prior_idx, 3)
+        self.assertIsNotNone(prior)
+        self.assertEqual(prior_idx, short_appt.get_prior_num(others))
 
         # __str__
         appt_str = ("1|08:00|10|08:10|" +
