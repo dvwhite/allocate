@@ -91,11 +91,13 @@ class Appointment(object):
         :param others: a list of Interval objects
         :return: An Interval object
         """
+        others_copy = copy.deepcopy(others)
+        others_copy.sort(reverse=False)
         self_idx = others.index(self)
-        start = [interval.start for interval in others]
-        finish = [interval.finish for interval in others]
+        start = [interval.start for interval in others_copy]
+        finish = [interval.finish for interval in others_copy]
         rightmost = bisect.bisect_right(finish, start[self_idx])
-        others_rightmost = copy.deepcopy(others[:rightmost])
+        others_rightmost = others_copy[:rightmost]
         compatible_idx = [others.index(other) for other in others_rightmost]
         compatible_idx.sort(reverse=True)
         for idx in compatible_idx:
