@@ -1003,6 +1003,7 @@ class BruteForceDP(AvailabilityController):
         :param schedule: A schedule object
         """
         AvailabilityController.__init__(self, schedule)
+        self.interpreter_appts = []
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
         self.orig_weights = {}
         self._cache_original_weights()
