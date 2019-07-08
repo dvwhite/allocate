@@ -69,9 +69,8 @@ class TestClass(unittest.TestCase):
         # one appointment analyzed, at key 1, there were two analyzed,
         # at key three, 0-2 indices were included in the analysis,
         # and this continues for as many indices as in
-        # range(len(self.schedule.appts))
-        bf_ids_dict = {0: [1],
-                       1: [2],
+        # range(len(self.schedule.appts)),
+        bf_ids_dict = {1: [2],
                        2: [2],
                        3: [2],
                        4: [2],
@@ -138,7 +137,7 @@ class TestClass(unittest.TestCase):
 
         # Try an increasing index number
 
-        # reset the class instance
+        # First, reset the class instance
         self.schedule = bf_test_schedule.copy()
         self.cls = BruteForceDP(self.schedule)
 
