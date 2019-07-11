@@ -1,5 +1,7 @@
 from schedulers import BruteForceDP
 from tests.objects import bf_test_schedule
+from utils import Time
+from constants import TIME_FORMAT
 import unittest
 import sys
 sys.path.append('..')
@@ -135,11 +137,17 @@ class TestClass(unittest.TestCase):
                           self.cls.get_jobs_with_ids(co_ids)])
             self.assertLessEqual(bf_sum, co_sum)
 
+            lst_assign = [self.cls.can_assign(interpreter, co_appt) for
+                          co_appt in self.cls.get_jobs_with_ids(co_ids)]
+            self.assertTrue(all(lst_assign))
+
         # Try an increasing index number
 
         # First, reset the class instance
         self.schedule = bf_test_schedule.copy()
         self.cls = BruteForceDP(self.schedule)
+        self.cls.init_job(interpreter, self.cls.default_appt)
+        interpreter.shift_finish = Time("17:00", TIME_FORMAT)
 
         # 1
         test_num(1)
