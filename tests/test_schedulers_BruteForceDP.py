@@ -120,11 +120,12 @@ class TestClass(unittest.TestCase):
                        46: [2, 7, 12, 19, 25, 26, 33, 43, 45, 47],
                        47: [2, 7, 12, 19, 25, 26, 33, 43, 45, 48],
                        48: [2, 7, 12, 19, 25, 26, 33, 43, 45, 48],
-                       49: [2, 7, 12, 19, 25, 26, 33, 43, 45, 48]}
+                       49: [2, 7, 12, 19, 25, 26, 33, 43, 45, 49, 50]}
 
         def test_num(num):
+            ata = self.cls.appts_to_assign
             appts = [int(idnum) for idnum in
-                     self.cls.compute_optimal(num).split(", ")]
+                     self.cls.compute_optimal(num, ata).split(", ")]
             appts.sort()
             appts.pop(0)
 
@@ -296,11 +297,55 @@ class TestClass(unittest.TestCase):
         # 49
         test_num(49)
 
-        # print_schedule
-        pass
-
         # gen_optimal
-        pass
+        # reset test objects
+        self.schedule = bf_test_schedule.copy()
+        self.cls = BruteForceDP(self.schedule)
+        appts = self.cls.appts_to_assign
+
+        # create weights and compute optimal
+        self.cls.appt_weights = self.cls.calculate_weights(appts)
+        appt_weights = {0: 0, 1: 215, 2: 215, 3: 215, 4: 215, 5: 215,
+                        6: 430, 7: 430, 8: 430, 9: 430, 10: 430, 11: 645,
+                        12: 645, 13: 645, 14: 645, 15: 645, 16: 645,
+                        17: 645, 18: 860, 19: 860, 20: 975, 21: 1065,
+                        22: 1065, 23: 1072, 24: 1075, 25: 1290, 26: 1290,
+                        27: 1385, 28: 1502, 29: 1502, 30: 1502, 31: 1505,
+                        32: 1505, 33: 1597, 34: 1597, 35: 1597, 36: 1600,
+                        37: 1607, 38: 1720, 39: 1720, 40: 1720, 41: 1720,
+                        42: 1720, 43: 1720, 44: 1795, 45: 1915, 46: 1990,
+                        47: 2010, 48: 2010, 49: 2222}
+        self.assertEqual(appt_weights, self.cls.appt_weights)
+
+        optimal = self.cls.compute_optimal(len(appts) - 1, appts)
+        self.assertEqual('49, 48, 44, 42, 32, 25, 24, 18, 11, 6, 1, 0',
+                         optimal)
+        appt_idxs = [int(idx) for idx in optimal.split(sep=", ")]
+        self.assertEqual([49, 48, 44, 42, 32, 25, 24, 18, 11, 6, 1, 0],
+                         appt_idxs)
+        appt_idxs.sort()
+        self.assertEqual([0, 1, 6, 11, 18, 24, 25, 32, 42, 44, 48, 49],
+                         appt_idxs)
+        id_nums = [appts[idx].idnum for idx in appt_idxs]
+        self.assertEqual([1, 2, 7, 12, 19, 25, 26, 33, 43, 45, 49, 50],
+                         id_nums)
+        self.assertEqual([1, 2, 7, 12, 19, 25, 26, 33, 43, 45, 49, 50],
+                         self.cls.gen_optimal(appts))
+
+        # create_cached_schedule
+        self.schedule = bf_test_schedule.copy()
+        self.cls = BruteForceDP(self.schedule)
+        self.cls.init_job(interpreter, self.cls.default_appt)
+        appts = self.cls.appts_to_assign
+        self.assertEqual([1, 2, 7, 12, 19, 25, 26, 33, 43, 45, 49, 50],
+                         self.cls.gen_optimal(appts))
+
+        ids = [2, 7, 12, 19, 25, 26, 33, 43, 45, 49, 50]
+        jobs = self.cls.get_jobs_with_ids(ids)
+        jobs = [self.cls.default_appt] + jobs
+        self.cls.create_cached_schedule(interpreter, appts)
+        self.assertEqual(self.cls.jobs[interpreter],
+                         jobs)
 
         # create_cached_assignment
         pass
