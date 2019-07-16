@@ -1103,6 +1103,7 @@ class BruteForceDP(AvailabilityController):
         self.update_weights(interpreter)
         appt_ids = self.gen_optimal(appts)
         # delete the zero that is only there b/c compute_optimal(0, appts) = 0
+        # TODO - fix the zero indexing conflict
         appt_ids = appt_ids[1:]
         self.reset_weights()
 
@@ -1123,18 +1124,11 @@ class BruteForceDP(AvailabilityController):
                                       self.appts_to_assign)
             appts = self.valid_choices[interpreter]
             # if gen_optimal is passed an empty list it breaks
+            # so it's important to break out of the loop when
+            # it encounters an empty list of appts
             if len(appts) < 1:
                 continue
-
-            # Modify assignment weights, create schedule, and reset weights
-            self.update_weights(interpreter)
-            appt_ids = self.gen_optimal(appts)
-            self.reset_weights()
-
-            # Assign the interpreter to the schedule
-            appts = [appt for appt in self.appts_to_assign
-                     for idx in appt_ids[1:] if appt.idnum == idx]
-            self.group_assign(interpreter, appts)
+            self.create_cached_schedule(interpreter, appts)
         return self.schedule.copy()
 
 
