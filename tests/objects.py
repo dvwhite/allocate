@@ -242,8 +242,8 @@ appt37 = Appointment(idnum=30, start="13:00", duration_in_mins=45,
 appt38 = Appointment(idnum=31, start="13:00", duration_in_mins=45,
                      patient=patient1, location=loc7, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt39 = Appointment(idnum=32, start="13:00", duration_in_mins=55,
-                     patient=patient1, location=loc5, priority=215,
+appt39 = Appointment(idnum=32, start="13:00", duration_in_mins=255,
+                     patient=patient1, location=loc5, priority=222115,
                      provider="Dr. Jane", interpreter='')
 appt40 = Appointment(idnum=33, start="13:05", duration_in_mins=45,
                      patient=patient1, location=loc6, priority=215,
