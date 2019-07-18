@@ -36,7 +36,7 @@ class Appointment(object):
         self.priority = priority
         self.provider = provider
         self.interpreter = interpreter
-        self.late_allowed = 15
+        self.late_allowed = 0
 
     def brief(self):
         """
@@ -104,6 +104,15 @@ class Appointment(object):
             other = others[idx]
             if other.is_compatible(self):
                 return other
+
+    def calc_prior2(self, others):
+        lst = copy.deepcopy(others)
+        lst.sort(key=attrgetter('finish'), reverse=False)
+        pos = bisect.bisect(others, self)
+        valid_others = [other for other in others[:pos] if
+                        other.finish <= self.start]
+        if len(valid_others) > 0:
+            return valid_others[-1]
 
     def get_prior_num(self, others):
         """
