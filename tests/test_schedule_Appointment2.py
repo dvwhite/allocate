@@ -10,6 +10,7 @@ from location import Location
 from schedulers import BruteForceDP as bfd
 from utils import Time
 from constants import TIME_FORMAT
+from operator import attrgetter
 import unittest
 import sys
 sys.path.append('..')
@@ -51,15 +52,17 @@ class TestSomething(unittest.TestCase):
                                  7: 11, 8: 11}
 
         cls = bfd(sched)
-        # self.assertEqual(cls.appt_weights, precalculated_weights)
         p_dict = {}
         for appt in appts:
-            prior = appt.calc_prior(appts)
+            prior = appt.calc_prior2(appts)
             if prior is not None:
                 p_dict[appt.idnum] = prior.idnum
             else:
                 p_dict[appt.idnum] = 0
-        print(p_dict)
+        # This tests whether calc_prior returns the correct indices
+        self.assertEqual(p_dict, precalculated_p)
+
+
 
 
 if __name__ == '__main__':
