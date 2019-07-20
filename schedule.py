@@ -108,7 +108,8 @@ class Appointment(object):
     def calc_prior2(self, others):
         lst = copy.deepcopy(others)
         lst.sort(key=attrgetter('finish'), reverse=False)
-        pos = bisect.bisect(others, self)
+        finish = [other.finish for other in others]
+        pos = bisect.bisect(finish, self.finish)
         valid_others = [other for other in others[:pos] if
                         other.finish <= self.start]
         if len(valid_others) > 0:
@@ -120,7 +121,7 @@ class Appointment(object):
         :param others: a list of Interval objects
         :return: An integer idnum
         """
-        prior = self.calc_prior(others)
+        prior = self.calc_prior2(others)
         if prior is None:
             prior_num = 0
         else:
