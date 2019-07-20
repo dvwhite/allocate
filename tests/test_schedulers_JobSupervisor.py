@@ -112,9 +112,6 @@ class TestClass(unittest.TestCase):
         self.assertTrue(self.cls.can_assign(interpreters[0],
                                             appts[0],
                                             appts[1]))
-        self.assertTrue(self.cls.can_assign(interpreters[0],
-                                             appts[0],
-                                             appts[0]))
 
         # can_insert_job
         self.cls.appts_to_assign.append(appt6)
