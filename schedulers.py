@@ -20,6 +20,7 @@ from constants import (
     TIME_FORMAT,
     WALKING_RATE
 )
+from operator import attrgetter
 
 
 class ObjectInitializer(Grid):
@@ -1004,6 +1005,8 @@ class BruteForceDP(AvailabilityController):
         """
         AvailabilityController.__init__(self, schedule)
         self.interpreter_appts = []
+        self.schedule.appts.sort(key=attrgetter('finish'))
+        self.appts_to_assign = list(schedule.appts)
         self.appt_weights = self.calculate_weights(self.appts_to_assign)
         self.orig_weights = {}
         self._cache_original_weights()
@@ -1047,8 +1050,8 @@ class BruteForceDP(AvailabilityController):
         """
         weights = dict()
         weights[0] = 0
-        for appt in appts[1:]:
-            idx = appts.index(appt)
+        for appt in sorted(appts, key=attrgetter('finish')):
+            idx = appt.idnum
             p = appt.get_prior_num(appts)
             weights[idx] = max(appt.priority + weights[p],
                                weights[idx-1])
