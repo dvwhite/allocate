@@ -112,7 +112,7 @@ class Appointment(object):
         pos = bisect.bisect(finish, self.finish)
         valid_others = [other for other in others[:pos] if
                         other.finish <= self.start]
-        if len(valid_others) > 0:
+        if valid_others:
             return valid_others[-1]
 
     def get_prior_num(self, others):
@@ -125,7 +125,8 @@ class Appointment(object):
         if prior is None:
             prior_num = 0
         else:
-            prior_num = others.index(prior)
+            # prior_num = others.index(prior)
+            prior_num = prior.idnum
         return prior_num
 
     def __str__(self):
