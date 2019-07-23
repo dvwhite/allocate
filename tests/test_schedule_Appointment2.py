@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from schedule import (
     Appointment,
     Schedule
@@ -8,15 +10,11 @@ from person import (
 )
 from location import Location
 from schedulers import BruteForceDP as bfd
-from utils import Time
-from constants import TIME_FORMAT
-from operator import attrgetter
 import unittest
-import sys
-sys.path.append('..')
 
+sched_test = []
 
-class TestSomething(unittest.TestCase):
+class TestClass(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -51,6 +49,8 @@ class TestSomething(unittest.TestCase):
         precalculated_weights = {1: 1, 2: 2, 3: 4, 4: 6, 5: 11, 6: 11,
                                  7: 11, 8: 11}
 
+        global sched_test
+        sched_test = appts
         cls = bfd(sched)
         p_dict = {}
         for appt in appts:
@@ -61,8 +61,8 @@ class TestSomething(unittest.TestCase):
                 p_dict[appt.idnum] = 0
         # This tests whether calc_prior returns the correct indices
         self.assertEqual(p_dict, precalculated_p)
-
-
+        cls.appt_weights.pop(0, None)
+        self.assertEqual(cls.appt_weights, precalculated_weights)
 
 
 if __name__ == '__main__':
