@@ -1007,9 +1007,15 @@ class BruteForceDP(AvailabilityController):
         self.interpreter_appts = []
         self.schedule.appts.sort(key=attrgetter('finish'))
         self.appts_to_assign = list(schedule.appts)
-        self.appt_weights = self.calculate_weights(self.appts_to_assign)
         self.orig_weights = {}
+        self.orig_idnums = {}
+        self._cache_original_idnums()
         self._cache_original_weights()
+        self._calc_weights()
+
+    def _calc_weights(self):
+        self.set_idnum_to_idx(self.schedule.appts)
+        self.appt_weights = self.calculate_weights(self.schedule.appts)
 
     def _cache_original_weights(self):
         """
@@ -1020,9 +1026,34 @@ class BruteForceDP(AvailabilityController):
         for appt in self.schedule.appts:
             self.orig_weights[appt.idnum] = appt.priority
 
+    def _cache_original_idnums(self):
+        """
+        Store a copy of the original appt idnums at self.__init__
+        :return: None
+        """
+        # self.orig_weights is where the object stores the original weights
+        for appt in self.schedule.appts:
+            idx = self.schedule.appts.index(appt) + 1
+            self.orig_idnums[idx] = appt.idnum
+
     def reset_weights(self):
+        """
+        Revert appointment weights to the original value at initialization
+        Assumes that weights have been pre-cached and modified prior to running
+        :return: None
+        """
         for appt in self.schedule.appts:
             appt.priority = self.orig_weights[appt.idnum]
+
+    def reset_idnums(self):
+        """
+        Revert appointment idnums to the original value at initialization
+        Assumes that idnums have been pre-cached and modified prior to running
+        :return: None
+        """
+        for appt in self.schedule.appts:
+            modified_idnum = appt.idnum
+            appt.idnum = self.orig_idnums[modified_idnum]
 
     def update_weights(self, interpreter):
         """
@@ -1039,6 +1070,18 @@ class BruteForceDP(AvailabilityController):
                     weight_modifier = interpreter.assignments[loc]
                     appt.priority *= weight_modifier
 
+    def set_idnum_to_idx(self, appts):
+        """
+        Replace appointment idnums with their index in self.schedule.appts
+        :param: Appointments to iterate over
+        :return: None
+        """
+        for appt in self.schedule.appts:
+            if appt.idnum not in self.orig_idnums.values():
+                raise ValueError("Appt not in self.orig_idnums")
+            idx = self.schedule.appts.index(appt) + 1
+            appt.idnum = idx
+
     @staticmethod
     def calculate_weights(appts):
         """
@@ -1050,7 +1093,8 @@ class BruteForceDP(AvailabilityController):
         """
         weights = dict()
         weights[0] = 0
-        for appt in sorted(appts, key=attrgetter('finish')):
+        appts_to_calculate = sorted(appts, key=attrgetter('finish'))
+        for appt in appts_to_calculate:
             idx = appt.idnum
             p = appt.get_prior_num(appts)
             weights[idx] = max(appt.priority + weights[p],
@@ -1090,7 +1134,7 @@ class BruteForceDP(AvailabilityController):
         optimal = self.compute_optimal(len(appts) - 1, appts)
         appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
         appt_ids.sort()
-        return [self.appts_to_assign[idx].idnum for idx in appt_ids]
+        return [appts[idx].idnum for idx in appt_ids]
 
     def create_cached_schedule(self, interpreter, appts):
         """
@@ -1106,7 +1150,6 @@ class BruteForceDP(AvailabilityController):
         self.update_weights(interpreter)
         appt_ids = self.gen_optimal(appts)
         # delete the zero that is only there b/c compute_optimal(0, appts) = 0
-        # TODO - fix the zero indexing conflict
         appt_ids = appt_ids[1:]
         self.reset_weights()
 
