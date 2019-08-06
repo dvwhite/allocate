@@ -46,7 +46,7 @@ class TestClass(unittest.TestCase):
                          )
         inter = sched.interpreters[0]
         precalculated_p = {1: 0, 2: 0, 3: 1, 4: 2, 5: 4, 6: 3, 7: 1, 8: 1}
-        precalculated_weights = {1: 1, 2: 2, 3: 4, 4: 6, 5: 11, 6: 11,
+        precalculated_weights = {0: 0, 1: 1, 2: 2, 3: 4, 4: 6, 5: 11, 6: 11,
                                  7: 11, 8: 11}
 
         global sched_test
@@ -61,8 +61,14 @@ class TestClass(unittest.TestCase):
                 p_dict[appt.idnum] = 0
         # This tests whether calc_prior returns the correct indices
         self.assertEqual(p_dict, precalculated_p)
-        cls.appt_weights.pop(0, None)
         self.assertEqual(cls.appt_weights, precalculated_weights)
+
+        # test compute_optimal
+        precalculated_co = [2, 4, 5]
+        optimal = cls.compute_optimal(len(appts), appts)
+        optimal = sorted([int(idx) for idx in optimal.split(', ')])
+        optimal.pop(0)
+        self.assertEqual(precalculated_co, optimal)
 
 
 if __name__ == '__main__':
