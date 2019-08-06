@@ -65,7 +65,8 @@ class TestClass(unittest.TestCase):
 
         # test compute_optimal
         precalculated_co = [2, 4, 5]
-        optimal = cls.compute_optimal(len(appts), appts)
+        optimal = cls.compute_optimal(len(cls.appts_to_assign),
+                                      cls.appts_to_assign)
         optimal = sorted([int(idx) for idx in optimal.split(', ')])
         optimal.pop(0)
         self.assertEqual(precalculated_co, optimal)
