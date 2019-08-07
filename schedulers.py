@@ -1151,8 +1151,6 @@ class BruteForceDP(AvailabilityController):
 
         self.update_weights(interpreter)
         appt_ids = self.gen_optimal(appts)
-        # delete the zero that is only there b/c compute_optimal(0, appts) = 0
-        appt_ids = appt_ids[1:]
         self.reset_weights()
 
         appts_to_assign = self.get_jobs_with_ids(appt_ids)
