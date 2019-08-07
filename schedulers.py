@@ -1007,6 +1007,7 @@ class BruteForceDP(AvailabilityController):
         self.interpreter_appts = []
         self.schedule.appts.sort(key=attrgetter('finish'))
         self.appts_to_assign = list(schedule.appts)
+        self.appt_weights = {}
         self.orig_weights = {}
         self.orig_idnums = {}
         self._cache_original_idnums()
@@ -1113,7 +1114,7 @@ class BruteForceDP(AvailabilityController):
         if j == 0:
             return 0
         else:
-            appt = appts[j]
+            appt = [appt for appt in appts if appt.idnum == j][0]
             v = appt.priority
             p = appt.get_prior_num(appts)
             if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
@@ -1131,10 +1132,11 @@ class BruteForceDP(AvailabilityController):
             raise ValueError("Interpreter unable to work any appointments.")
 
         self.appt_weights = self.calculate_weights(appts)
-        optimal = self.compute_optimal(len(appts) - 1, appts)
+        optimal = self.compute_optimal(len(appts), appts)
         appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
         appt_ids.sort()
-        return [appts[idx].idnum for idx in appt_ids]
+        appt_ids.pop(0)
+        return appt_ids
 
     def create_cached_schedule(self, interpreter, appts):
         """
