@@ -49,9 +49,9 @@ loc1 = Location(x=0,
                 building="Central Hospital",
                 clinic="Radiology")
 
-# 4, 4
+# 4, -4
 loc2 = Location(x=4,
-                y=4,
+                y=-4,
                 building="West Wing",
                 clinic="Ophthalmology")
 
@@ -242,8 +242,8 @@ appt37 = Appointment(idnum=30, start="13:00", duration_in_mins=45,
 appt38 = Appointment(idnum=31, start="13:00", duration_in_mins=45,
                      patient=patient1, location=loc7, priority=195,
                      provider="Dr. Jane", interpreter='')
-appt39 = Appointment(idnum=32, start="13:00", duration_in_mins=55,
-                     patient=patient1, location=loc5, priority=215,
+appt39 = Appointment(idnum=32, start="13:00", duration_in_mins=255,
+                     patient=patient1, location=loc5, priority=222115,
                      provider="Dr. Jane", interpreter='')
 appt40 = Appointment(idnum=33, start="13:05", duration_in_mins=45,
                      patient=patient1, location=loc6, priority=215,
@@ -316,4 +316,5 @@ patients = [patient1, patient2]
 test_schedule = Schedule(appts=appts,
                          interpreters=interpreters)
 bf_test_schedule = Schedule(appts=bf_appts,
-                            interpreters=[interpreters[0], interpreters[1]])
+                            interpreters=[interpreters[0], interpreters[1]]
+                            )

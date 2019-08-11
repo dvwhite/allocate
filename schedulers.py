@@ -20,6 +20,7 @@ from constants import (
     TIME_FORMAT,
     WALKING_RATE
 )
+from operator import attrgetter
 
 
 class ObjectInitializer(Grid):
@@ -793,11 +794,11 @@ class Greedy(AvailabilityController):
                            in interpreter_sublist]) + "...")
             self.interpreters = interpreter_sublist
             if balanced:
-                self.create_balanced_greedy_schedule(Time("00:00",  TIME_FORMAT),
-                                              printing)
+                self.create_balanced_greedy_schedule(Time("00:00", TIME_FORMAT),
+                                                     printing)
             else:
-                self.create_classic_greedy_schedule(Time("00:00",  TIME_FORMAT),
-                                             optimal, printing)
+                self.create_classic_greedy_schedule(Time("00:00", TIME_FORMAT),
+                                                    optimal, printing)
             if printing:
                 print(self.schedule.brief())
         if printing:
@@ -1003,7 +1004,84 @@ class BruteForceDP(AvailabilityController):
         :param schedule: A schedule object
         """
         AvailabilityController.__init__(self, schedule)
-        self.appt_weights = self.calculate_weights(self.appts_to_assign)
+        self.interpreter_appts = []
+        self.schedule.appts.sort(key=attrgetter('finish'))
+        self.appts_to_assign = list(schedule.appts)
+        self.appt_weights = {}
+        self.orig_weights = {}
+        self.orig_idnums = {}
+        self._cache_original_idnums()
+        self._cache_original_weights()
+        self._calc_weights()
+
+    def _calc_weights(self):
+        self.set_idnum_to_idx(self.schedule.appts)
+        self.appt_weights = self.calculate_weights(self.schedule.appts)
+
+    def _cache_original_weights(self):
+        """
+        Store a copy of the original appt weights at self.__init__
+        :return: None
+        """
+        # self.orig_weights is where the object stores the original weights
+        for appt in self.schedule.appts:
+            self.orig_weights[appt.idnum] = appt.priority
+
+    def _cache_original_idnums(self):
+        """
+        Store a copy of the original appt idnums at self.__init__
+        :return: None
+        """
+        # self.orig_weights is where the object stores the original weights
+        for appt in self.schedule.appts:
+            idx = self.schedule.appts.index(appt) + 1
+            self.orig_idnums[idx] = appt.idnum
+
+    def reset_weights(self):
+        """
+        Revert appointment weights to the original value at initialization
+        Assumes that weights have been pre-cached and modified prior to running
+        :return: None
+        """
+        for appt in self.schedule.appts:
+            appt.priority = self.orig_weights[appt.idnum]
+
+    def reset_idnums(self):
+        """
+        Revert appointment idnums to the original value at initialization
+        Assumes that idnums have been pre-cached and modified prior to running
+        :return: None
+        """
+        for appt in self.schedule.appts:
+            modified_idnum = appt.idnum
+            appt.idnum = self.orig_idnums[modified_idnum]
+
+    def update_weights(self, interpreter):
+        """
+        Update the appointment weights based on the interpreter's assignment
+        :param interpreter: An Interpreter object
+        :return: None
+        """
+        wts_sum = sum([val for key, val in interpreter.assignments.items()])
+        # I want to avoid unnecessary processing when all weights *= 1
+        if wts_sum != len(interpreter.assignments):
+            for appt in self.schedule.appts:
+                loc = appt.location.building
+                if loc in interpreter.assignments.keys():
+                    weight_modifier = interpreter.assignments[loc]
+                    appt.priority *= weight_modifier
+
+    def set_idnum_to_idx(self, appts):
+        """
+        Replace appointment idnums with their index in self.schedule.appts
+        :param: Appointments to iterate over
+        :return: None
+        """
+        for appt in self.schedule.appts:
+            if appt.idnum not in self.orig_idnums.values():
+                raise ValueError("Appt not in self.orig_idnums")
+            idx = self.schedule.appts.index(appt) + 1
+            appt.idnum = idx
 
     @staticmethod
     def calculate_weights(appts):
@@ -1016,65 +1094,87 @@ class BruteForceDP(AvailabilityController):
         """
         weights = dict()
         weights[0] = 0
-        for appt in appts[1:]:
-            idx = appts.index(appt)
+        appts_to_calculate = sorted(appts, key=attrgetter('finish'))
+        for appt in appts_to_calculate:
+            idx = appt.idnum
             p = appt.get_prior_num(appts)
             weights[idx] = max(appt.priority + weights[p],
                                weights[idx-1])
         return weights
 
-    def compute_optimal(self, j):
+    def compute_optimal(self, j, appts):
         """
         Recursively visits nodes in a list and selects the most highly
         weighted node at each edge, then proceeds from the optimal
         node to the next optimal node, repeating until j=0
         :param j: the idnum of the interval
+        :param appts: A list of Appointments
         :return: A string
         """
         if j == 0:
             return 0
         else:
-            appt = self.appts_to_assign[j]
+            appt = [appt for appt in appts if appt.idnum == j][0]
             v = appt.priority
-            p = appt.get_prior_num(self.appts_to_assign)
+            p = appt.get_prior_num(appts)
             if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
-                return str(j) + ", " + str(self.compute_optimal(p))
+                return str(j) + ", " + str(self.compute_optimal(p, appts))
             else:
-                return self.compute_optimal(j-1)
+                return self.compute_optimal(j-1, appts)
 
-    def print_schedule(self):
-        """
-        Prints the optimal appointment selections
-        """
-        optimal_solution = self.compute_optimal(len(self.appts_to_assign) - 1)
-        appt_lst = [int(idx) for idx in optimal_solution.split(sep=", ")]
-        appt_lst.sort()
-        print("")
-        for idx in appt_lst[1:]:
-            print(self.appts_to_assign[idx])
-
-    def gen_optimal(self, interpreter):
+    def gen_optimal(self, appts):
         """
         Generates a list of the optimal appt choices for interpreter
-        :param interpreter: An Interpreter object
+        :param appts: A list of Appointment objects
         :return: The optimal list of appts for interpreter to cover
         """
-        self.update_valid_choices(interpreter.shift_start,
-                                  self.appts_to_assign)
-        self.appt_weights = self.calculate_weights(self.appts_to_assign)
-        appts = self.valid_choices[interpreter]
-        optimal = self.compute_optimal(len(appts) - 1)
+        if len(appts) < 1:
+            raise ValueError("Interpreter unable to work any appointments.")
+
+        self.appt_weights = self.calculate_weights(appts)
+        optimal = self.compute_optimal(len(appts), appts)
         appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
         appt_ids.sort()
-        return [self.appts_to_assign[idx].idnum for idx in appt_ids]
+        appt_ids.pop(0)
+        return appt_ids
 
-    def create_cached_assignment(self):
+    def create_cached_schedule(self, interpreter, appts):
+        """
+        Assigns interpreter to appointments in appts using compute_optimal to
+        calculate the optimally weighted intervals for interpreter
+        :param interpreter: An Interpreter object
+        :param appts: A list of Appointment objects
+        :return: None
+        """
+        if len(appts) < 1:
+            raise ValueError("No appointments to assign.")
+
+        self.update_weights(interpreter)
+        appt_ids = self.gen_optimal(appts)
+        self.reset_weights()
+
+        appts_to_assign = self.get_jobs_with_ids(appt_ids)
+        self.group_assign(interpreter, appts_to_assign)
+
+    @timer
+    def create_cached_assignment(self, interpreters):
+        """
+        Create a schedule for each interpreter using compute_optimal/caching
+        :param interpreters: A list of Interpreter objects
+        :return: A Schedule object
+        """
         self.reset()
-        for interpreter in self.interpreters:
-            appt_ids = self.gen_optimal(interpreter)
-            appts = [appt for appt in self.appts_to_assign
-                     for idx in appt_ids[1:] if appt.idnum == idx]
-            self.group_assign(interpreter, appts)
+        for interpreter in interpreters:
+            # Find the appointments that interpreter can work
+            self.update_valid_choices(interpreter.shift_start,
+                                      self.appts_to_assign)
+            appts = self.valid_choices[interpreter]
+            # if gen_optimal is passed an empty list it breaks
+            # so it's important to break out of the loop when
+            # it encounters an empty list of appts
+            if len(appts) < 1:
+                continue
+            self.create_cached_schedule(interpreter, appts)
         return self.schedule.copy()
 
 
@@ -1104,7 +1204,7 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
       
     def call_method_default(self, method, printing=False):
         """
-        Call method of some class using pre-defined (default) parameters
+        Call class method using pre-defined (default) parameters
         :param method: The method to call
         :param printing: A Boolean whether to print status messages
         :return: Whatever the method called returns
@@ -1115,13 +1215,12 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
                                           self.max_repeated_result,
                                           printing],
                 self.create_classic_greedy_schedule: [self.default_time,
-                                               optimal,
-                                               printing],
+                                                      optimal, printing],
                 self.create_balanced_greedy_schedule: [self.default_time,
-                                                optimal,
-                                                printing],
+                                                       optimal, printing],
                 self.create_bruteforce_schedule: [printing],
-                self.create_bruteforce_assignment: [printing]}
+                self.create_bruteforce_assignment: [printing],
+                self.create_cached_assignment: [self.interpreters]}
         if method in args.keys():
             lst = args[method]
             return method(*lst)

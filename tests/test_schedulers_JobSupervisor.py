@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from schedulers import JobSupervisor
 from location import Point
 from tests.objects import (
@@ -8,8 +10,6 @@ from tests.objects import (
     appt7
 )
 import unittest
-import sys
-sys.path.append('..')
 
 
 class TestClass(unittest.TestCase):
@@ -24,7 +24,8 @@ class TestClass(unittest.TestCase):
         self.appt2 = appt5.copy()
 
     def test(self):
-        appts = self.cls.schedule.appts
+        self.cls.appts_to_assign = list(self.schedule.appts)
+        appts = self.cls.appts_to_assign
         interpreters = self.cls.interpreters
 
         # get_job_with_id
@@ -89,20 +90,19 @@ class TestClass(unittest.TestCase):
 
         # Is compatible tests if the appt start is >= the interpreter's start
         # It also tests if appt finish is <= interpreter's end time
-        # To avoid scheduling interpreters at invalid times
+        # to avoid scheduling interpreters at invalid times
 
         # This test has appt start at 8:45 and appt finish at 10:05
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 8:45, and 12:30 >= 10:05, so this test should PASS
-        is_compatible = self.cls.is_compatible_with_shift(self.interpreter,
-                                                          self.appt)
+        is_compatible = self.cls.is_appt_in_shift(self.interpreter,
+                                                  self.appt)
         self.assertTrue(is_compatible)
 
         # This test has appt start at 12:45 and appt finish at 13:25
         # This test has interp start at 8:30 and finish at 12:30
         # 8:30 <= 12:45, but 12:30 < 13:25, so this test should FAIL
-        is_compatible = self.cls.is_compatible_with_shift(self.interpreter,
-                                                          self.appt2)
+        is_compatible = self.cls.is_appt_in_shift(self.interpreter, self.appt2)
         self.assertFalse(is_compatible)
 
         # calc_impact
@@ -110,28 +110,22 @@ class TestClass(unittest.TestCase):
 
         # can_assign
         self.assertTrue(self.cls.can_assign(interpreters[0],
-                                                       appts[0],
-                                                       appts[1]))
-        self.assertFalse(self.cls.can_assign(interpreters[0],
-                                                        appts[0],
-                                                        appts[0]))
+                                            appts[0],
+                                            appts[1]))
 
         # can_insert_job
         self.cls.appts_to_assign.append(appt6)
         self.assertTrue(self.cls.can_insert_job(interpreters[0],
-                                                           appt6))
+                                                appt6))
         self.cls.assign(interpreters[0], appt6)
         self.assertFalse(self.cls.can_insert_job(interpreters[0],
-                                                            appt7))
+                                                 appt7))
 
         # assign
         # save existing assigned staff before reset
-        interpreter = appts[0].interpreter
+        interpreter = self.cls.interpreters[0]
         # reset objects
-        appts[0].interpreter = ""
-        self.cls.jobs[interpreter].remove(appts[0])
-        self.cls.move_to(interpreter, Point(0, 0))
-        self.cls.appts_to_assign.append(appts[0])
+        self.cls.reset()
 
         # assign the interpreter to the appointment
         self.cls.assign(interpreter, appts[0])
@@ -142,12 +136,7 @@ class TestClass(unittest.TestCase):
 
         # group_assign
         # reset appts[0]
-        self.cls.jobs[interpreter].remove(appts[0])
-        self.cls.move_to(interpreter, Point(0, 0))
-        self.cls.appts_to_assign.append(appts[0])
-        # reset appt6
-        self.cls.jobs[interpreter].remove(appt6)
-        self.cls.move_to(interpreter, Point(0, 0))
+        self.cls.reset()
         self.cls.appts_to_assign.append(appt6)
 
         # create jobs and call the method under test

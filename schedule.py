@@ -36,7 +36,7 @@ class Appointment(object):
         self.priority = priority
         self.provider = provider
         self.interpreter = interpreter
-        self.late_allowed = 15
+        self.late_allowed = 0
 
     def brief(self):
         """
@@ -86,40 +86,14 @@ class Appointment(object):
         return arrival_time <= second_time
 
     def calc_prior(self, others):
-        """
-        Returns the idnum of the rightmost compatible interval
-        :param others: a list of Interval objects
-        :return: An Interval object
-        """
-        self_idx = others.index(self)
-        start = [interval.start for interval in others]
-        finish = [interval.finish for interval in others]
-        rightmost = bisect.bisect_right(finish, start[self_idx])
-        others_rightmost = copy.deepcopy(others[:rightmost])
-        compatible_idx = [others.index(other) for other in others_rightmost]
-        compatible_idx.sort(reverse=True)
-        for idx in compatible_idx:
-            other = others[idx]
-            if other.is_compatible(self):
-                return other
-
-    def calc_prior_by_arrival(self, others):
-        """
-        Returns the idnum of the rightmost compatible interval
-        :param others: a list of Interval objects
-        :return: An Interval object
-        """
-        self_idx = others.index(self)
-        start = [interval.start for interval in others]
-        arrival = [calc_arrival(interval, self) for interval in others]
-        rightmost = bisect.bisect_right(arrival, start[self_idx])
-        others_rightmost = copy.deepcopy(others[:rightmost])
-        compatible_idx = [others.index(other) for other in others_rightmost]
-        compatible_idx.sort(reverse=True)
-        for idx in compatible_idx:
-            other = others[idx]
-            if other.is_compatible(self):
-                return other
+        lst = copy.deepcopy(others)
+        lst.sort(key=attrgetter('finish'), reverse=False)
+        finish = [other.finish for other in others]
+        pos = bisect.bisect(finish, self.finish)
+        valid_others = [other for other in others[:pos] if
+                        other.finish <= self.start]
+        if valid_others:
+            return valid_others[-1]
 
     def get_prior_num(self, others):
         """
@@ -131,7 +105,8 @@ class Appointment(object):
         if prior is None:
             prior_num = 0
         else:
-            prior_num = others.index(prior)
+            # prior_num = others.index(prior)
+            prior_num = prior.idnum
         return prior_num
 
     def __str__(self):
