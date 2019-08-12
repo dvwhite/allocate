@@ -70,7 +70,14 @@ class Appointment(object):
         dist = self.location.distance_from(other.location)
         return dist
 
+    def overlaps_with(self, other):
+        appts = sorted([self, other])
+        return appts[0].finish <= appts[1].start
+
     def is_compatible(self, other):
+        return self.overlaps_with(other)
+
+    def is_compatible_arrival(self, other):
         """
         Test whether self and other are not overlapping appointments
         :param other: An Appointment object
