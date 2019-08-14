@@ -54,7 +54,7 @@ class TestClass(unittest.TestCase):
         cls = bfd(sched)
         p_dict = {}
         for appt in appts:
-            prior = appt.calc_prior2(appts)
+            prior = appt.calc_prior(appts)
             if prior is not None:
                 p_dict[appt.idnum] = prior.idnum
             else:
