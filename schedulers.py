@@ -1084,7 +1084,23 @@ class BruteForceDP(AvailabilityController):
             appt.idnum = idx
 
     @staticmethod
-    def calculate_weights(appts):
+    def indexed_p(appt, appts):
+        """
+        Get prior value indexed in the greater appts list
+        :param appt: An Appointment object
+        :param appts: A list of Appointment objects
+        :return: An integer id number, the idnum property of Appointment
+        """
+        p_idnum = appt.get_prior_num(appts)
+        if p_idnum > 0:
+            p_appt = [appt for appt in appts
+                      if appt.idnum == p_idnum][0]
+            p = appts.index(p_appt) + 1
+        else:
+            p = p_idnum
+        return p
+
+    def calculate_weights(self, appts):
         """
         Create a dictionary of appt weights used in compute_optimal
         Warning: Do not sort appts after running this function or
@@ -1096,8 +1112,9 @@ class BruteForceDP(AvailabilityController):
         weights[0] = 0
         appts_to_calculate = sorted(appts, key=attrgetter('finish'))
         for appt in appts_to_calculate:
-            idx = appt.idnum
-            p = appt.get_prior_num(appts)
+            #idx = appt.idnum
+            idx = appts_to_calculate.index(appt) + 1
+            p = self.indexed_p(appt, appts)
             weights[idx] = max(appt.priority + weights[p],
                                weights[idx-1])
         return weights
@@ -1114,9 +1131,11 @@ class BruteForceDP(AvailabilityController):
         if j == 0:
             return 0
         else:
-            appt = [appt for appt in appts if appt.idnum == j][0]
+            #appt = [appt for appt in appts if appt.idnum == j][0]
+            appt = appts[j - 1]
             v = appt.priority
-            p = appt.get_prior_num(appts)
+            #p = appt.get_prior_num(appts)
+            p = self.indexed_p(appt, appts)
             if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
                 return str(j) + ", " + str(self.compute_optimal(p, appts))
             else:
@@ -1133,9 +1152,10 @@ class BruteForceDP(AvailabilityController):
 
         self.appt_weights = self.calculate_weights(appts)
         optimal = self.compute_optimal(len(appts), appts)
-        appt_ids = [int(idx) for idx in optimal.split(sep=", ")]
-        appt_ids.sort()
-        appt_ids.pop(0)
+        appts_idx = [int(idx) for idx in optimal.split(sep=", ")]
+        appts_idx.sort()
+        appts_idx.pop(0)
+        appt_ids = [appts[idx - 1].idnum for idx in appts_idx]
         return appt_ids
 
     def create_cached_schedule(self, interpreter, appts):
