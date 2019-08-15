@@ -1114,7 +1114,7 @@ class BruteForceDP(AvailabilityController):
         for appt in appts_to_calculate:
             #idx = appt.idnum
             idx = appts_to_calculate.index(appt) + 1
-            p = self.indexed_p(appt, appts)
+            p = self.indexed_p(appt, appts_to_calculate)
             weights[idx] = max(appt.priority + weights[p],
                                weights[idx-1])
         return weights
@@ -1161,7 +1161,7 @@ class BruteForceDP(AvailabilityController):
     def create_cached_schedule(self, interpreter, appts):
         """
         Assigns interpreter to appointments in appts using compute_optimal to
-        calculate the optimally weighted intervals for interpreter
+        calculate the optimally weighted intervals in appts for interpreter
         :param interpreter: An Interpreter object
         :param appts: A list of Appointment objects
         :return: None
