@@ -47,6 +47,7 @@ class TestClass(unittest.TestCase):
 
         # update_valid_choices
         self.cls.appts_to_assign.append(appts[0])
+        self.cls.appts_to_assign.append(appts[1])
         self.cls.jobs[interpreters[0]] = [self.cls.default_appt]
         self.cls.assign(interpreters[0], appts[0])
         self.cls.update_valid_choices(appts[0].finish, appts)
