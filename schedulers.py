@@ -1123,7 +1123,7 @@ class BruteForceDP(AvailabilityController):
         """
         Recursively visits nodes in a list and selects the most highly
         weighted node at each edge, then proceeds from the optimal
-        node to the next optimal node, repeating until j=0
+        node to the next optimal node, repeating until j==0
         :param j: the idnum of the interval
         :param appts: A list of Appointments
         :return: A string
@@ -1189,6 +1189,7 @@ class BruteForceDP(AvailabilityController):
             self.update_valid_choices(interpreter.shift_start,
                                       self.appts_to_assign)
             appts = self.valid_choices[interpreter]
+            appts.sort(key=attrgetter('finish'))
             # if gen_optimal is passed an empty list it breaks
             # so it's important to break out of the loop when
             # it encounters an empty list of appts
