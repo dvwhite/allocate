@@ -70,7 +70,14 @@ class Appointment(object):
         dist = self.location.distance_from(other.location)
         return dist
 
+    def overlaps_with(self, other):
+        appts = sorted([self, other])
+        return appts[0].finish <= appts[1].start
+
     def is_compatible(self, other):
+        return self.overlaps_with(other)
+
+    def is_compatible_arrival(self, other):
         """
         Test whether self and other are not overlapping appointments
         :param other: An Appointment object
@@ -81,43 +88,19 @@ class Appointment(object):
         first_appt = appts[0]
         second_appt = appts[1]
         arrival_time = calc_arrival(first_appt, second_appt)
-        return arrival_time <= second_appt.start
+        second_time = second_appt.start.copy()
+        second_time.add_time(hours=0, minutes=self.late_allowed)
+        return arrival_time <= second_time
 
     def calc_prior(self, others):
-        """
-        Returns the idnum of the rightmost compatible interval
-        :param others: a list of Interval objects
-        :return: An Interval object
-        """
-        self_idx = others.index(self)
-        start = [interval.start for interval in others]
-        finish = [interval.finish for interval in others]
-        rightmost = bisect.bisect_right(finish, start[self_idx])
-        others_rightmost = copy.deepcopy(others[:rightmost])
-        compatible_idx = [others.index(other) for other in others_rightmost]
-        compatible_idx.sort(reverse=True)
-        for idx in compatible_idx:
-            other = others[idx]
-            if other.is_compatible(self):
-                return other
-
-    def calc_prior_by_arrival(self, others):
-        """
-        Returns the idnum of the rightmost compatible interval
-        :param others: a list of Interval objects
-        :return: An Interval object
-        """
-        self_idx = others.index(self)
-        start = [interval.start for interval in others]
-        arrival = [calc_arrival(interval, self) for interval in others]
-        rightmost = bisect.bisect_right(arrival, start[self_idx])
-        others_rightmost = copy.deepcopy(others[:rightmost])
-        compatible_idx = [others.index(other) for other in others_rightmost]
-        compatible_idx.sort(reverse=True)
-        for idx in compatible_idx:
-            other = others[idx]
-            if other.is_compatible(self):
-                return other
+        lst = copy.deepcopy(others)
+        lst.sort(key=attrgetter('finish'), reverse=False)
+        finish = [other.finish for other in others]
+        pos = bisect.bisect(finish, self.finish)
+        valid_others = [other for other in others[:pos] if
+                        other.finish <= self.start]
+        if valid_others:
+            return valid_others[-1]
 
     def get_prior_num(self, others):
         """
@@ -125,11 +108,12 @@ class Appointment(object):
         :param others: a list of Interval objects
         :return: An integer idnum
         """
-        prior = self.calc_prior_by_arrival(others)
+        prior = self.calc_prior(others)
         if prior is None:
             prior_num = 0
         else:
-            prior_num = others.index(prior)
+            # prior_num = others.index(prior)
+            prior_num = prior.idnum
         return prior_num
 
     def __str__(self):
