@@ -4,7 +4,7 @@
 ###### This is a graph visualization of appointment IDs mapped to subsequent compatible appointments IDs using one of the tree mapping functions (`update_valid_choices`).
 
 
-My intent when creating this project was to prototype a simple, lightweight scheduling optimization tool. This is my open source first project. Feedback is very much appreciated.
+My intent when creating this project was to prototype a simple, lightweight scheduling optimization tool. This is my first open source project. Feedback is very much appreciated.
 
 You'll like this project if you schedule a workforce with fixed shift start and end times and want to allocate your available staffing resources to achieve a higher overall impact. You'll also like the project if, like me, you enjoy experimenting with changes to how you would normally schedule staff.
 
@@ -124,13 +124,7 @@ The computational time complexity of the `BruteForce` class method `gen_all_path
 ### Prerequisites
 
 #### Files
-To get up and running, you will need the following files:
-```
-ScheduleSim.py
-CSVProcessor.py
-CSVData.py
-A csv of schedule data to read and modify that conforms to the header structure in CSVData.py
-```
+To get up and running, you will need all project files. It is recommend to use the latest release.
 
 #### Python Version
 Python 3.6 or higher is required to run the code.
@@ -147,6 +141,7 @@ copy
 sys
 timeit
 functools
+operator
 ```
 
 ## License
