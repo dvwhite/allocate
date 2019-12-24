@@ -4,19 +4,19 @@
 ###### This is a graph visualization of appointment IDs mapped to subsequent compatible appointments IDs using one of the tree mapping functions (`update_valid_choices`).
 
 
-My intent when creating this project was to prototype a simple, lightweight scheduling optimization tool. This is my first open source project. Feedback is very much appreciated.
+My intent when creating this project was to prototype a simple, lightweight scheduling optimization tool. This is my first open source project. Feedback is very much appreciated!
 
 You'll like this project if you schedule a workforce with fixed shift start and end times and want to allocate your available staffing resources to achieve a higher overall impact. You'll also like the project if, like me, you enjoy experimenting with changes to how you would normally schedule staff.
 
-##### Big 3 Project Goals
-###### #1 - Flexibility
+#### Big 3 Project Goals
+##### #1 - Flexibility
 As someone who manages staff allocation for a living, I understand that no two scheduling operations are identical. In this project, the primary goal is to give you the freedom to tailor it to your specific needs. I have created the basic building blocks of a scheduling operation that meets my needs and I know that someone else will eventually find ways to improve upon it based on their own unique needs.
 
-###### #2 - Convenience
-Many of the abstractions you would expect for as simple and straightforward of a staff scheduling operation as mine are defined in the project, so you don't need to bother creating them: patients, interpreters, appointments, schedules. There are no real-time dispatching or request management features built in since that is out of the scope of this project, and would not represent the current push system it is modeled after. 
+##### #2 - Convenience
+Many of the abstractions you would expect for as simple and straightforward of a staff scheduling operation as mine are defined in the project, so you don't need to bother creating them: patients, interpreters, appointments, schedules. 
 
-###### #3 - Experimentation
-The project makes it pretty simple to experiment annd explore the impact of scheduling variable changes and decisions. It is then possible to learn more about your scheduling operation and apply valuable observations in the workplace to better allocate your resources without having to impact the real world.
+##### #3 - Experimentation
+The project simplifies the tasks associated with experimenting with and exploring the impact of scheduling variable changes and decisions without having to impact the real world. By experimenting in this way, is then possible to dive deeper into your scheduling operation and come out with valuable observations, which you could then implement in the workplace to better allocate your resources. 
 
 ## Project Structure
 
@@ -39,16 +39,16 @@ Unit test files
 
 ## Design & Formatting Decisions
 
-##### Style
+#### Style
 Code is formatted according to PEP8 style guidelines with the help of Pycharm IDE. I opted for a code documentation docstring format able to autogenerate reStructuredText documentation.
 
-##### Organization
+#### Organization
 I wanted the config file to contain all of the user-defined information (staff names, shift times, assignment weights, staff per shift...) to keep the real world customizations seperate from the business model.  
 
-##### Future Plans
+#### Future Plans
 The static python config file could be replaced, augmented or simply modified by a or via a command line interface, or even a GUI (I've toyed with the idea of trying out electron but haven't had the time).
 
-##### File Structure
+#### File Structure
 * Base classes and subclasses are grouped together whenever possible
 
 Main Business Logic:
@@ -114,7 +114,7 @@ An alternative approach that involves randomized schedule creation. The schedule
 Since tests performed on simulated schedule data have returned tree path counts in the tens of millions, almost reaching 100M, it seems unlikely that this method would return the optimal schedule anytime soon, however it did approach both the brute force and greedy heuristics' effectiveness, displaying only a marginal impact loss after only 100 or so trials at the time of writing. Again, your mileage may vary.
 
 ### Weighted Interval Scheduling Algorithm
-Currently under development but is planned to replace the `BruteForce` class.
+The time complexity of the `BruteForce` class motivated me to develop a faster solution. The weighted interval scheduling algorithm has proven a partial solution to some of the problems with `BruteForce`. It can compute a solution in `O(nlogn)`, so is not as constrained by tree node size, or by the number of edges on each node. The key is that it uses memoization by computing the highest-weighted path choices before applying them to the data. The use of memoization renders it unable to work with 2d coordinates and their impact to commute times, which has presented a challenge when working with data that is not already sorted and constrained by physical location.   
 
 ##### Complexity Constraints  
 The computational time complexity of the `BruteForce` class method `gen_all_paths` seems to grow exponentially at somewhere near O(x^e). A moderately small number of nodes for `BruteForce` doesn't seem to take very long, but your mileage may vary by hardware. Going higher than that recommended number of nodes might require a lot more time to run than would seem reasonable in a work environment, thus why the research into using dynamic programming will be necessary for mainstream use.
