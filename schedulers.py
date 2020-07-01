@@ -1080,11 +1080,10 @@ class BruteForceDP(AvailabilityController):
         weights = dict()
         weights[0] = 0
         appts_to_calculate = sorted(appts, key=attrgetter('finish'))
-        for appt in appts_to_calculate:
-            idx = appts_to_calculate.index(appt) + 1
+        for idx, appt in enumerate(appts_to_calculate):
             p = self.indexed_p(appt, appts_to_calculate)
-            weights[idx] = max(appt.priority + weights[p],
-                               weights[idx-1])
+            weights[idx + 1] = max(appt.priority + weights[p],
+                               weights[idx])
         return weights
 
     def compute_optimal(self, j, appts):
