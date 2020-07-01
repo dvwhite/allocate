@@ -22,7 +22,6 @@ from constants import (
 )
 from operator import attrgetter
 
-
 class ObjectInitializer(Grid):
     """
     Initializes scheduler objects
@@ -36,7 +35,8 @@ class ObjectInitializer(Grid):
         self.schedule = schedule
         self.schedule_dict = {}
         self.appts_dict = {}
-        self.appts_to_assign = list(schedule.appts)
+        self.appts_to_assign = copy.deepcopy([appt for appt in schedule.appts if
+                                             len(appt.interpreter) == 0])
         self.language_dict = collections.defaultdict(list)
         self.time_dict = collections.defaultdict(list)
         self.valid_choices = collections.defaultdict(list)
@@ -124,6 +124,7 @@ class Reinitializer(ObjectInitializer):
         :param schedule: A Schedule object
         """
         ObjectInitializer.__init__(self, schedule)
+        self.orig_schedule = schedule.copy()
 
     def reset(self):
         """
@@ -147,7 +148,8 @@ class Reinitializer(ObjectInitializer):
         Reinitialize class data structures
         :return: None
         """
-        self.appts_to_assign = list(self.schedule.appts)
+        self.appts_to_assign = list([appt for appt in self.schedule.appts if
+                                     len(appt.interpreter) == 0])
         self.time_dict = collections.defaultdict(list)
         self.valid_choices = collections.defaultdict(list)
         self.jobs = {}
@@ -162,7 +164,8 @@ class Reinitializer(ObjectInitializer):
         :return: None
         """
         for appt in self.schedule.appts:
-            appt.interpreter = ""
+            original_appt = self.appts_dict[appt.idnum]
+            appt.interpreter = original_appt.interpreter
         for interpreter in self.interpreters:
             self.add_loc(interpreter, Point(0, 0))
             self.init_job(interpreter, self.default_appt)
@@ -1006,7 +1009,8 @@ class BruteForceDP(AvailabilityController):
         AvailabilityController.__init__(self, schedule)
         self.interpreter_appts = []
         self.schedule.appts.sort(key=attrgetter('finish'))
-        self.appts_to_assign = list(schedule.appts)
+        self.appts_to_assign = list([appt for appt in self.schedule.appts if
+                                     len(appt.interpreter) == 0])
         self.appt_weights = {}
         self.orig_weights = {}
         self._cache_original_weights()
@@ -1076,11 +1080,10 @@ class BruteForceDP(AvailabilityController):
         weights = dict()
         weights[0] = 0
         appts_to_calculate = sorted(appts, key=attrgetter('finish'))
-        for appt in appts_to_calculate:
-            idx = appts_to_calculate.index(appt) + 1
+        for idx, appt in enumerate(appts_to_calculate):
             p = self.indexed_p(appt, appts_to_calculate)
-            weights[idx] = max(appt.priority + weights[p],
-                               weights[idx-1])
+            weights[idx + 1] = max(appt.priority + weights[p],
+                               weights[idx])
         return weights
 
     def compute_optimal(self, j, appts):
@@ -1114,6 +1117,8 @@ class BruteForceDP(AvailabilityController):
 
         self.appt_weights = self.calculate_weights(appts)
         optimal = self.compute_optimal(len(appts), appts)
+        if optimal == 0:
+            return []
         appts_idx = [int(idx) for idx in optimal.split(sep=", ")]
         appts_idx.sort()
         appts_idx.pop(0)
@@ -1130,13 +1135,13 @@ class BruteForceDP(AvailabilityController):
         """
         if len(appts) < 1:
             raise ValueError("No appointments to assign.")
-
         self.update_weights(interpreter)
         appt_ids = self.gen_optimal(appts)
         self.reset_weights()
 
-        appts_to_assign = self.get_jobs_with_ids(appt_ids)
-        self.group_assign(interpreter, appts_to_assign)
+        if len(appt_ids) > 0:
+            appts_to_assign = self.get_jobs_with_ids(appt_ids)
+            self.group_assign(interpreter, appts_to_assign)
 
     @timer
     def create_cached_assignment(self, interpreters):
