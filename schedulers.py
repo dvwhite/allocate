@@ -1009,7 +1009,8 @@ class BruteForceDP(AvailabilityController):
         AvailabilityController.__init__(self, schedule)
         self.interpreter_appts = []
         self.schedule.appts.sort(key=attrgetter('finish'))
-        self.appts_to_assign = list(schedule.appts)
+        self.appts_to_assign = list([appt for appt in self.schedule.appts if
+                                     len(appt.interpreter) == 0])
         self.appt_weights = {}
         self.orig_weights = {}
         self._cache_original_weights()
@@ -1133,13 +1134,13 @@ class BruteForceDP(AvailabilityController):
         """
         if len(appts) < 1:
             raise ValueError("No appointments to assign.")
-
         self.update_weights(interpreter)
         appt_ids = self.gen_optimal(appts)
         self.reset_weights()
 
-        appts_to_assign = self.get_jobs_with_ids(appt_ids)
-        self.group_assign(interpreter, appts_to_assign)
+        if len(appt_ids) > 0:
+            appts_to_assign = self.get_jobs_with_ids(appt_ids)
+            self.group_assign(interpreter, appts_to_assign)
 
     @timer
     def create_cached_assignment(self, interpreters):
