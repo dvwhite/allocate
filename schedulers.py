@@ -27,7 +27,6 @@ class ObjectInitializer(Grid):
     """
     Initializes scheduler objects
     """
-
     def __init__(self, schedule):
         """
         Initialize the ObjectInitializer class
@@ -38,7 +37,7 @@ class ObjectInitializer(Grid):
         self.schedule_dict = {}
         self.appts_dict = {}
         self.appts_to_assign = copy.deepcopy([appt for appt in schedule.appts if
-                                              len(appt.interpreter) == 0])
+                                             len(appt.interpreter) == 0])
         self.language_dict = collections.defaultdict(list)
         self.time_dict = collections.defaultdict(list)
         self.valid_choices = collections.defaultdict(list)
@@ -71,7 +70,7 @@ class ObjectInitializer(Grid):
         :return: None
         """
         self.populate_objects()
-        self.populate_collections()
+        self.populate_collections()        
 
     def populate_objects(self):
         """
@@ -81,12 +80,11 @@ class ObjectInitializer(Grid):
         # Verify there are no repeated ID numbers
         counts = {}
         for appt in self.schedule.appts:
-            new_count = counts.get(appt, 0) + 1
+            new_count = counts.get(appt.idnum, 0) + 1
             if new_count > 1:
-                raise SystemExit(
-                    f'You cannot duplicate appointment id numbers! We found a duplicate: {new_count}')
+                raise SystemExit(f'You cannot duplicate appointment id numbers! We found a duplicate: {appt.idnum}')
             else:
-                counts[appt] = new_count
+                counts[appt.idnum] = new_count
 
         # Reset interpreters to initial positions
         for interpreter in self.schedule.interpreters:
@@ -130,7 +128,6 @@ class Reinitializer(ObjectInitializer):
     """
     Reinitialize objects initialized by ObjectInitializer
     """
-
     def __init__(self, schedule):
         """
         Initialize the Reinitializer class
@@ -188,7 +185,6 @@ class JobSupervisor(Reinitializer):
     """
     Keeps track of correctly assigning jobs to Interpreters
     """
-
     def __init__(self, schedule):
         """
         Initialize the JobSupervisor class
@@ -452,14 +448,13 @@ class AvailabilityController(JobSupervisor):
     """
     Controls the availability of Interpreter objects using Time dicts
     """
-
     def __init__(self, schedule):
         """
         Initialize the AvailabilityController class
         :param schedule: A Schedule object
         """
         JobSupervisor.__init__(self, schedule)
-
+        
     def update_time_dict(self, time, appts):
         """
         A dict of Appointments in ascending order at or after a given time
@@ -547,7 +542,6 @@ class MonteCarlo(AvailabilityController):
     """
     Generate pseudo-random schedules with variable impact scores
     """
-
     def __init__(self, schedule):
         """
         Initialize the MonteCarlo class
@@ -567,10 +561,10 @@ class MonteCarlo(AvailabilityController):
             temp_lst = []
             for language in interpreter.languages:
                 temp_lst += list(
-                    [appt for appt in self.language_dict[language] if
-                     appt in self.appts_to_assign and
-                     appt.start >= time]
-                )
+                             [appt for appt in self.language_dict[language] if
+                              appt in self.appts_to_assign and
+                              appt.start >= time]
+                             )
             while temp_lst:
                 self.update_valid_choices(time, temp_lst)
                 rand_appt = random.choice(temp_lst)
@@ -587,7 +581,7 @@ class MonteCarlo(AvailabilityController):
                 temp_lst.remove(rand_appt)
         return copy.deepcopy(self.schedule)
 
-    @timer
+    @timer        
     def monte_carlo_trials(self, time, ntrials,
                            max_repeated=sys.maxsize, printing=False):
         """
@@ -638,14 +632,13 @@ class Greedy(AvailabilityController):
     """
     Utilizes the greedy heuristic for scheduling optimization
     """
-
     def __init__(self, schedule):
         """
         Initialize the Greedy class
         :param schedule: A Schedule object
         """
         AvailabilityController.__init__(self, schedule)
-
+        
     def select_highest_priority(self, interpreter, time, appts):
         """
         Return appointment in appts with the highest priority
@@ -666,7 +659,7 @@ class Greedy(AvailabilityController):
             current_max = max(max_value, appt.priority)
             if current_max > max_value:
                 highest_priority_appt = appt
-        return highest_priority_appt
+        return highest_priority_appt       
 
     @staticmethod
     def process_args(optimal, appt_lst, interpreter):
@@ -722,9 +715,9 @@ class Greedy(AvailabilityController):
             appt_lst = []
             for language in interpreter.languages:
                 appt_lst += list([appt for appt in
-                                  self.language_dict[language]
-                                  if (appt in self.appts_to_assign and
-                                      appt.start >= time)])
+                                 self.language_dict[language]
+                                 if (appt in self.appts_to_assign and
+                                     appt.start >= time)])
             while appt_lst:
                 self.update_valid_choices(time, appt_lst)
                 greedy_appt, greedy_str = self.process_args(optimal,
@@ -761,7 +754,7 @@ class Greedy(AvailabilityController):
                        appt.start >= time:
                         interpreter_list.append(appt)
             appts[interpreter] = interpreter_list
-
+            
         while appts:
             for interpreter in dict(appts):
                 if len(appts[interpreter]) < 1:
@@ -792,7 +785,7 @@ class Greedy(AvailabilityController):
                         appts[interpreter].remove(greedy_appt)
         return copy.deepcopy(self.schedule)
 
-    @timer
+    @timer                        
     def group_greedy(self, interpreter_lists, optimal, balanced=False,
                      printing=False):
         """
@@ -835,7 +828,6 @@ class BruteForce(AvailabilityController):
     computed (given how many schedule order permutations you
     want to test) and selecting the list of valid, highest weight
     """
-
     def __init__(self, schedule):
         """
         Initialize the BruteForce class
@@ -892,9 +884,9 @@ class BruteForce(AvailabilityController):
                     appt_wts = [appts_dict[ID].priority for ID in
                                 (path + [next]) if ID in appts_dict]
                     inter_wts = [interpreter.assignments[
-                        appts_dict[ID].location.building
-                    ]
-                        for ID in (path + [next]) if ID in appts_dict]
+                                     appts_dict[ID].location.building
+                                 ]
+                                 for ID in (path + [next]) if ID in appts_dict]
                     weight = sum_lists_product(appt_wts, inter_wts)
                     if weight > max_weight:
                         self.best_paths[interpreter] = (weight, path + [next])
@@ -961,7 +953,7 @@ class BruteForce(AvailabilityController):
             list_of_paths.append(
                 list(tree_function(subtree, startNode,
                                    endNode, interpreter))
-            )
+                )
         self.schedule_paths = []
         for row in list_of_paths:
             for appt in row:
@@ -969,7 +961,7 @@ class BruteForce(AvailabilityController):
         if interpreter in opt.best_paths:
             self.best_paths[interpreter] = opt.best_paths[interpreter]
 
-    @timer
+    @timer                        
     def group_gen_all_paths(self, tree_function, interpreters, printing=False):
         """
         Iteratively run tree_function on list of Interpreter objects
@@ -1001,7 +993,7 @@ class BruteForce(AvailabilityController):
         self.reset()
         return self.group_gen_all_paths(self.dfs_weighted,
                                         self.interpreters, printing)
-
+    
     def create_bruteforce_assignment(self, printing=False):
         """
         Use dfs_weighted_by_assignment to generate the optimal schedule
@@ -1019,7 +1011,6 @@ class BruteForceDP(AvailabilityController):
     I retain the default one-letter variable names from the memoized
     weighted interval scheduling algorithm to remind me what they represent
     """
-
     def __init__(self, schedule):
         """
         Initialize the BruteForceDP class
@@ -1102,7 +1093,7 @@ class BruteForceDP(AvailabilityController):
         for idx, appt in enumerate(appts_to_calculate):
             p = self.indexed_p(appt, appts_to_calculate)
             weights[idx + 1] = max(appt.priority + weights[p],
-                                   weights[idx])
+                               weights[idx])
         return weights
 
     def compute_optimal(self, j, appts):
@@ -1120,10 +1111,10 @@ class BruteForceDP(AvailabilityController):
             appt = appts[j - 1]
             v = appt.priority
             p = self.indexed_p(appt, appts)
-            if (v + self.appt_weights[p]) >= self.appt_weights[j - 1]:
+            if (v + self.appt_weights[p]) >= self.appt_weights[j-1]:
                 return str(j) + ", " + str(self.compute_optimal(p, appts))
             else:
-                return self.compute_optimal(j - 1, appts)
+                return self.compute_optimal(j-1, appts)
 
     def gen_optimal(self, appts):
         """
@@ -1189,7 +1180,6 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
     """
     Compares the performance of scheduling algorithms
     """
-
     def __init__(self, schedule):
         """
         Initialize the Optimum class
@@ -1209,7 +1199,7 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
                                  self.create_bruteforce_schedule,
                                  self.create_bruteforce_assignment,
                                  self.create_cached_assignment]
-
+      
     def call_method_default(self, method, printing=False):
         """
         Call class method using pre-defined (default) parameters
@@ -1253,6 +1243,6 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
             self.schedules.append((score, method_name,
                                    copy.deepcopy(temp_sched)))
         self.has_compared = True
-
+        
     def __hash__(self):
         return id(self)
