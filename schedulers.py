@@ -22,7 +22,6 @@ from constants import (
 )
 from operator import attrgetter
 
-
 class ObjectInitializer(Grid):
     """
     Initializes scheduler objects
@@ -36,7 +35,8 @@ class ObjectInitializer(Grid):
         self.schedule = schedule
         self.schedule_dict = {}
         self.appts_dict = {}
-        self.appts_to_assign = list(schedule.appts)
+        self.appts_to_assign = copy.deepcopy([appt for appt in schedule.appts if
+                                             len(appt.interpreter) == 0])
         self.language_dict = collections.defaultdict(list)
         self.time_dict = collections.defaultdict(list)
         self.valid_choices = collections.defaultdict(list)
@@ -124,6 +124,7 @@ class Reinitializer(ObjectInitializer):
         :param schedule: A Schedule object
         """
         ObjectInitializer.__init__(self, schedule)
+        self.orig_schedule = schedule.copy()
 
     def reset(self):
         """
