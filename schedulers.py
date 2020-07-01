@@ -1117,6 +1117,8 @@ class BruteForceDP(AvailabilityController):
 
         self.appt_weights = self.calculate_weights(appts)
         optimal = self.compute_optimal(len(appts), appts)
+        if optimal == 0:
+            return []
         appts_idx = [int(idx) for idx in optimal.split(sep=", ")]
         appts_idx.sort()
         appts_idx.pop(0)
