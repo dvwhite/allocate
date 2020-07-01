@@ -148,7 +148,8 @@ class Reinitializer(ObjectInitializer):
         Reinitialize class data structures
         :return: None
         """
-        self.appts_to_assign = list(self.schedule.appts)
+        self.appts_to_assign = list([appt for appt in self.schedule.appts if
+                                     len(appt.interpreter) == 0])
         self.time_dict = collections.defaultdict(list)
         self.valid_choices = collections.defaultdict(list)
         self.jobs = {}
