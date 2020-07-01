@@ -164,7 +164,8 @@ class Reinitializer(ObjectInitializer):
         :return: None
         """
         for appt in self.schedule.appts:
-            appt.interpreter = ""
+            original_appt = self.appts_dict[appt.idnum]
+            appt.interpreter = original_appt.interpreter
         for interpreter in self.interpreters:
             self.add_loc(interpreter, Point(0, 0))
             self.init_job(interpreter, self.default_appt)
