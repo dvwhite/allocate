@@ -10,6 +10,7 @@ class Person(object):
     """
     A base class for all people
     """
+
     def __init__(self, name, languages, gender):
         """
         Initialize the Person object
@@ -45,7 +46,7 @@ class Person(object):
 
     def __len__(self):
         return len(str(self))
-        
+
     def __eq__(self, other):
         if not isinstance(other, Person):
             return False
@@ -59,6 +60,7 @@ class Patient(Person):
     """
     A person with the addition of a patient id number
     """
+
     def __init__(self, idnum, name, languages, gender):
         Person.__init__(self, name, languages, gender)
         self.idnum = idnum
@@ -68,6 +70,7 @@ class Interpreter(Person):
     """
     A person working a shift with start and finish times, and assignments
     """
+
     def __init__(self, name, languages, gender, shift_start, shift_finish,
                  assignments):
         """
@@ -100,6 +103,6 @@ class Interpreter(Person):
         :return: A Boolean indicating if self.start is before other.start
         """
         if not isinstance(other, Interpreter):
-            raise TypeError("'<' not supported between instances of '"+\
+            raise TypeError("'<' not supported between instances of '" +
                             typedef(self) + "' and other types")
         return self.shift_start < other.shift_start
