@@ -13,6 +13,7 @@ class Appointment(object):
     """
     An encounter with fixed start and end times, and one patient
     """
+
     def __init__(self, idnum, start, duration_in_mins, patient, location,
                  priority, provider, interpreter):
         """
@@ -131,9 +132,6 @@ class Appointment(object):
             num_keys_iterated += 1
         return temp_str
 
-    def __hash__(self):
-        return id(self)
-
     def __eq__(self, other):
         if not isinstance(other, Appointment):
             return False
@@ -153,7 +151,7 @@ class Appointment(object):
         if not isinstance(other, Appointment):
             raise TypeError("'<' not supported between instances of '" +
                             typedef(self) + "' and other types")
-        
+
         return self.start < other.start
 
 
@@ -161,6 +159,7 @@ class Schedule(object):
     """
     Collection of weighted Appointment objects
     """
+
     def __init__(self, appts, interpreters):
         """
         Initialize the Schedule class, sort .appts, calculate .total_impact

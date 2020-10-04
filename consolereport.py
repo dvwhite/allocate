@@ -7,6 +7,7 @@ class ConsoleReport(Optimum):
     Write a text-based report to the console that
     ranks the scheduling methods by total score
     """
+
     def __init__(self, optimum):
         Optimum.__init__(self, optimum.schedule)
         self.schedules = optimum.schedules
@@ -62,17 +63,17 @@ class ConsoleReport(Optimum):
                 int_location = Point(0, 0)
                 print(
                     "Not currently assigned to an appointment." + '\n'
-                    )
+                )
             for appt in self.valid_choices[interpreter]:
-                    print('\t' + str(appt.IDNum) + " " +
-                          str(appt.start) +
-                          " - " +
-                          str(appt.finish) + " " +
-                          str((appt.location.x, appt.location.y)) +
-                          " " +
-                          str(round(
-                              appt.location.distanceFrom(int_location)))
-                          )
+                print('\t' + str(appt.IDNum) + " " +
+                      str(appt.start) +
+                      " - " +
+                      str(appt.finish) + " " +
+                      str((appt.location.x, appt.location.y)) +
+                      " " +
+                      str(round(
+                          appt.location.distanceFrom(int_location)))
+                      )
 
     def print_assignments(self, interpreter):
         """
@@ -95,7 +96,7 @@ class ConsoleReport(Optimum):
                 appts_to_print = ["None"]
         impact = sum([appt.priority for appt in appts_to_print])
         num_appts = len(appts_to_print)
-        
+
         print(msg)
         print('Impact:' + str(impact))
         print('Number:' + str(num_appts))
