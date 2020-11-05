@@ -1,4 +1,3 @@
-import ipdb
 import copy
 import random
 import collections
@@ -173,8 +172,7 @@ class Reinitializer(ObjectInitializer):
         :return: None
         """
         for appt in self.schedule.appts:
-            original_appt = self.appts_dict[appt.idnum]
-            appt.interpreter = original_appt.interpreter
+            appt.interpreter = ""
         for interpreter in self.interpreters:
             self.add_loc(interpreter, Point(0, 0))
             self.init_job(interpreter, self.default_appt)
@@ -719,7 +717,6 @@ class Greedy(AvailabilityController):
                           if language in appt.patient.languages
                           and appt.start >= time]
             while stack:
-                # ipdb.set_trace()
                 self.update_valid_choices(time, stack)
                 greedy_appt, greedy_str = self.process_args(optimal,
                                                             stack,
@@ -1237,6 +1234,7 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
         """
         self.schedules = []
         for method in list_of_methods:
+            self.reset()
             method_name = method.__name__
             print('')
             print('Calling ' + method_name + '...')
