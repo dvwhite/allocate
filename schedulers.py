@@ -1,4 +1,3 @@
-import ipdb
 import copy
 import random
 import collections
@@ -719,7 +718,6 @@ class Greedy(AvailabilityController):
                           if language in appt.patient.languages
                           and appt.start >= time]
             while stack:
-                # ipdb.set_trace()
                 self.update_valid_choices(time, stack)
                 greedy_appt, greedy_str = self.process_args(optimal,
                                                             stack,
