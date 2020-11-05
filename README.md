@@ -143,7 +143,9 @@ operator
 ```
 
 ### Overview, Data Flow and Demoing the Project
-The file of csv data is parsed by the `csvconfig` and `csvprocessor` files. The `csvconfig` contains the business data such as the list of available staff, their assignments and shift start/end times. The `csvconfig` file builds a `Schedule` class object using the `csvprocessor` library. The `csvconfig` file then creates a `Optimum` class object using the `Schedule`, and runs a method called `compare_performance`, and loads it into the `ConsoleReport` class to display to the user by printing it to the console/shell. 
+The `csvconfig` file builds a `Schedule` class object using the `csvprocessor` library. The `csvconfig` file then creates a `Optimum` class object using the `Schedule`, and runs a method called `compare_performance`, and loads it into the `ConsoleReport` class to display to the user by printing it to the console/shell. 
+
+<img align="left" alt="allocate flow diagram" width="95%" src="https://i.imgur.com/tfW6lxS.png" />
 
 The project is simple to set up and use. A high level overview of the project
 scripts is as follows:
