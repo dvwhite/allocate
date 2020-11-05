@@ -1234,6 +1234,7 @@ class Optimum(BruteForce, BruteForceDP, Greedy, MonteCarlo):
         """
         self.schedules = []
         for method in list_of_methods:
+            self.reset()
             method_name = method.__name__
             print('')
             print('Calling ' + method_name + '...')
